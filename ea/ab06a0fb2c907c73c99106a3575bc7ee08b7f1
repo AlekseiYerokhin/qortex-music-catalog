@@ -1,0 +1,19 @@
+.github/workflows/ci.yml
+  s_2d5db20a261733::t_8fc3e966b97d1c 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "eaab06a0fb2c907c73c99106a3575bc7ee08b7f1",
+  "prompts": {},
+  "sessions": {
+    "s_2d5db20a261733": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ff02db86bffeJClSMU0TqgK3lQ",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
