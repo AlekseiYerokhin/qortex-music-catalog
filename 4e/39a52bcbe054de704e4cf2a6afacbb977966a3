@@ -1,0 +1,19 @@
+frontend/Dockerfile
+  s_2d5db20a261733::t_b2c2cbc28abbcd 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4e39a52bcbe054de704e4cf2a6afacbb977966a3",
+  "prompts": {},
+  "sessions": {
+    "s_2d5db20a261733": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ff02db86bffeJClSMU0TqgK3lQ",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
