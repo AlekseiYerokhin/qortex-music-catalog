@@ -1,0 +1,26 @@
+frontend/src/stores/song.js
+  s_2d5db20a261733::t_75bc79a263fc81 23
+frontend/src/stores/album.js
+  s_2d5db20a261733::t_01c34fb64146c8 94
+  s_2d5db20a261733::t_36c448ae560ebe 26
+backend/qortex/settings.py
+  s_2d5db20a261733::t_e3388ed58122fb 169-170
+frontend/src/stores/artist.js
+  s_2d5db20a261733::t_0bb103722778b4 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e9bcf6f819b780dc36652533591ad83ce67e2546",
+  "prompts": {},
+  "sessions": {
+    "s_2d5db20a261733": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ff02db86bffeJClSMU0TqgK3lQ",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
