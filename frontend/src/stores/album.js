@@ -23,7 +23,7 @@ export const useAlbumStore = defineStore('album', {
       this.error = null
       try {
         const { data } = await getAlbums(params)
-        this.albums = data.results
+        this.albums = data.results || []
         return data
       } catch (e) {
         this.error = e.message
@@ -91,7 +91,7 @@ export const useAlbumStore = defineStore('album', {
       this.error = null
       try {
         const { data } = await getArtistAlbums(artistId)
-        return data.results
+        return data.results || []
       } catch (e) {
         this.error = e.message
         throw e

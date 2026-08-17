@@ -20,7 +20,7 @@ export const useSongStore = defineStore('song', {
       this.error = null
       try {
         const { data } = await getSongs(params)
-        this.songs = data.results
+        this.songs = data.results || []
         return data
       } catch (e) {
         this.error = e.message

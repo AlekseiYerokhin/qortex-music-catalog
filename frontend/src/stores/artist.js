@@ -20,7 +20,7 @@ export const useArtistStore = defineStore('artist', {
       this.error = null
       try {
         const { data } = await getArtists(params)
-        this.artists = data.results
+        this.artists = data.results || []
         return data
       } catch (e) {
         this.error = e.message
