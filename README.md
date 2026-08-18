@@ -22,7 +22,7 @@ A music catalog management application built with Django REST Framework + Vue 3 
 - **Album ↔ Song management** — add/remove songs to albums with track numbers (through model)
 - **Search & filter** — DRF search and ordering on all list endpoints
 - **Admin panel** — Django admin for manual data management
-- **Seeded sample data** — catalog pre-populated with artists, albums, and songs on startup
+- **Seeded sample data** — catalog pre-populated with artists, albums, and songs via `python manage.py seed`
 
 ## Project Structure
 
@@ -70,11 +70,18 @@ python manage.py seed
 python manage.py runserver
 ```
 
+To re-seed (wipe and replace existing data):
+
+```bash
+python manage.py seed --force
+```
+
 ### Frontend
 
 ```bash
 cd frontend
 npm install
+cp .env.example .env  # edit if needed
 npm run dev
 ```
 
@@ -91,7 +98,7 @@ docker compose up -d --build
 
 ### Access
 
-- Frontend: http://localhost
+- Frontend: http://localhost:8080
 - Backend API: http://localhost:8000/api
 - Admin panel: http://localhost:8000/admin/
 
@@ -103,6 +110,8 @@ docker compose up -d --build
 | `docker compose down` | Stop all services |
 | `docker compose down -v` | Stop and remove DB volume (resets all data) |
 | `docker compose logs -f backend` | Follow backend logs |
+| `docker compose exec backend python manage.py seed --force` | Re-seed sample data (wipes existing) |
+| `docker compose exec backend python manage.py createsuperuser` | Create admin user |
 
 ## API Documentation
 

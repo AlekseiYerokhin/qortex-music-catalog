@@ -7,7 +7,7 @@ No authentication required. All endpoints accept/return JSON.
 
 - All list endpoints support **pagination** (DRF PageNumberPagination):
   - `?page=2` — page number
-  - `?page_size=10` — items per page (default 100)
+  - `?page_size=10` — items per page (default 20, max 100)
 - All list endpoints support **search** and **ordering**:
   - `?search=foo` — full-text search on configured fields
   - `?ordering=title` — sort ascending; `-title` for descending

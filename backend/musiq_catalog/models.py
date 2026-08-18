@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -18,7 +21,12 @@ class Album(models.Model):
         on_delete=models.CASCADE,
         related_name="albums",
     )
-    release_year = models.IntegerField()
+    release_year = models.IntegerField(
+        validators=[
+            MinValueValidator(1860),
+            MaxValueValidator(datetime.now().year),
+        ]
+    )
     songs = models.ManyToManyField(
         "Song",
         through="AlbumSong",
@@ -56,7 +64,16 @@ class AlbumSong(models.Model):
     track_number = models.PositiveIntegerField()
 
     class Meta:
-        unique_together = ("album", "track_number")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["album", "track_number"],
+                name="uq_album_track_number",
+            ),
+            models.UniqueConstraint(
+                fields=["album", "song"],
+                name="uq_album_song",
+            ),
+        ]
         ordering = ["album", "track_number"]
 
     def __str__(self):

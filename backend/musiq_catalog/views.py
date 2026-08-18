@@ -1,4 +1,6 @@
 from django.db import IntegrityError
+from django.db.models import Count
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -14,10 +16,12 @@ from .serializers import (
 
 
 class ArtistListCreate(generics.ListCreateAPIView):
-    queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
     search_fields = ["name"]
     ordering_fields = ["id", "name"]
+
+    def get_queryset(self):
+        return Artist.objects.annotate(albums_count=Count("albums")).order_by("name")
 
 
 class ArtistDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -29,20 +33,48 @@ class ArtistAlbumsList(generics.ListAPIView):
     """Bonus endpoint: list albums for a given artist."""
 
     serializer_class = AlbumSerializer
+    search_fields = ["title"]
+    ordering_fields = ["id", "title", "release_year"]
 
     def get_queryset(self):
-        return Album.objects.filter(artist_id=self.kwargs["pk"])
+        artist = get_object_or_404(Artist, pk=self.kwargs["pk"])
+        return (
+            Album.objects.filter(artist=artist)
+            .select_related("artist")
+            .prefetch_related(
+                Prefetch(
+                    "album_songs",
+                    queryset=AlbumSong.objects.select_related("song").order_by(
+                        "track_number"
+                    ),
+                )
+            )
+        )
 
 
 class AlbumListCreate(generics.ListCreateAPIView):
-    queryset = Album.objects.select_related("artist").all()
     serializer_class = AlbumSerializer
     search_fields = ["title", "artist__name"]
     ordering_fields = ["id", "title", "release_year"]
 
+    def get_queryset(self):
+        return Album.objects.select_related("artist").prefetch_related(
+            Prefetch(
+                "album_songs",
+                queryset=AlbumSong.objects.select_related("song").order_by(
+                    "track_number"
+                ),
+            )
+        )
+
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Album.objects.select_related("artist").all()
+    queryset = Album.objects.select_related("artist").prefetch_related(
+        Prefetch(
+            "album_songs",
+            queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
+        )
+    )
     serializer_class = AlbumSerializer
 
 
@@ -55,7 +87,10 @@ class AlbumSongListCreate(generics.ListCreateAPIView):
     serializer_class = AlbumSongSerializer
 
     def get_queryset(self):
-        return AlbumSong.objects.filter(album_id=self.kwargs["pk"])
+        get_object_or_404(Album, pk=self.kwargs["pk"])
+        return AlbumSong.objects.filter(album_id=self.kwargs["pk"]).select_related(
+            "song"
+        )
 
     def create(self, request, *args, **kwargs):
         album = get_object_or_404(Album, pk=self.kwargs["pk"])
@@ -70,8 +105,9 @@ class AlbumSongListCreate(generics.ListCreateAPIView):
         except IntegrityError:
             return Response(
                 {
-                    "track_number": [
-                        "A song with this track number already exists for this album."
+                    "non_field_errors": [
+                        "This song is already on this album, or the track number "
+                        "is already taken."
                     ]
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -88,26 +124,39 @@ class AlbumSongDetail(generics.DestroyAPIView):
     Removes a song from an album (deletes the AlbumSong link).
     """
 
-    serializer_class = AlbumSongSerializer
-
-    def get_queryset(self):
-        return AlbumSong.objects.filter(
+    def delete(self, request, *args, **kwargs):
+        get_object_or_404(Album, pk=self.kwargs["pk"])
+        deleted, _ = AlbumSong.objects.filter(
             album_id=self.kwargs["pk"],
             song_id=self.kwargs["song_pk"],
-        )
-
-    def get_object(self):
-        queryset = self.get_queryset()
-        return get_object_or_404(queryset)
+        ).delete()
+        if deleted == 0:
+            return Response(
+                {"detail": "Not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SongListCreate(generics.ListCreateAPIView):
-    queryset = Song.objects.all()
     serializer_class = SongSerializer
     search_fields = ["title"]
     ordering_fields = ["id", "title"]
 
+    def get_queryset(self):
+        return Song.objects.prefetch_related(
+            Prefetch(
+                "album_songs",
+                queryset=AlbumSong.objects.select_related("album__artist"),
+            )
+        )
+
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Song.objects.all()
+    queryset = Song.objects.prefetch_related(
+        Prefetch(
+            "album_songs",
+            queryset=AlbumSong.objects.select_related("album__artist"),
+        )
+    )
     serializer_class = SongSerializer

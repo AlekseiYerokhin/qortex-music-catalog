@@ -41,3 +41,6 @@ pgdata/
 
 # Logs
 *.log
+
+# Review files (local only)
+qortex-catalog-review.html

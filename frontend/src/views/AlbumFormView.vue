@@ -21,22 +21,37 @@
 
         <q-select
           v-model="form.artist"
-          :options="artistOptions"
+          :options="filteredArtistOptions"
           label="Artist *"
           outlined
           dense
           emit-value
           map-options
+          use-input
+          input-debounce="300"
           :rules="[val => !!val || 'Artist is required']"
           lazy-rules
-        />
+          @filter="onFilterArtist"
+        >
+          <template #no-option>
+            <q-item>
+              <q-item-section class="text-grey-6">No artists found</q-item-section>
+            </q-item>
+          </template>
+        </q-select>
 
         <q-input
           v-model.number="form.release_year"
           type="number"
-          label="Release Year"
+          label="Release Year *"
           outlined
           dense
+          :rules="[
+            val => !!val || 'Release year is required',
+            val => val >= 1860 || 'Year must be 1860 or later',
+            val => val <= new Date().getFullYear() || 'Year cannot be in the future'
+          ]"
+          lazy-rules
         />
 
         <div class="flex justify-end gap-3 mt-4">
@@ -49,11 +64,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useArtistStore } from '../stores/artist'
 import { useAlbumStore } from '../stores/album'
+import { getArtists } from '../api'
 
 const route = useRoute()
 const router = useRouter()
@@ -69,9 +85,20 @@ const form = reactive({
   release_year: null,
 })
 
-const artistOptions = computed(() =>
-  artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
-)
+const filteredArtistOptions = ref([])
+
+async function onFilterArtist(val, update) {
+  if (!val) {
+    update(() => {
+      filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
+    })
+    return
+  }
+  update(async () => {
+    const { data } = await getArtists({ search: val, page_size: 50 })
+    filteredArtistOptions.value = data.results.map((a) => ({ label: a.name, value: a.id }))
+  })
+}
 
 async function loadAlbum() {
   if (!isEdit.value) return
@@ -86,7 +113,7 @@ async function onSave() {
     const payload = {
       title: form.title,
       artist: form.artist,
-      release_year: form.release_year || null,
+      release_year: form.release_year,
     }
     let saved
     if (isEdit.value) {
@@ -104,6 +131,7 @@ async function onSave() {
 
 onMounted(async () => {
   await artistStore.fetchArtists({ page_size: 100 })
+  filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
   await loadAlbum()
 })
 </script>

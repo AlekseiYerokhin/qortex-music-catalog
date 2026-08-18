@@ -5,13 +5,15 @@ from .models import Album, AlbumSong, Artist, Song
 
 class AlbumSongSerializer(serializers.ModelSerializer):
     """
-    Serializer for the through model. Used for write operations that need
-    to set the track number of a song within an album.
+    Serializer for the through model. Includes song details for read operations.
     """
+
+    song_title = serializers.CharField(source="song.title", read_only=True)
 
     class Meta:
         model = AlbumSong
-        fields = ["id", "album", "song", "track_number"]
+        fields = ["id", "album", "song", "song_title", "track_number"]
+        read_only_fields = ["album"]
 
 
 class ArtistSerializer(serializers.ModelSerializer):
@@ -22,6 +24,8 @@ class ArtistSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "albums_count"]
 
     def get_albums_count(self, obj):
+        if hasattr(obj, "albums_count"):
+            return obj.albums_count
         return obj.albums.count()
 
 
@@ -46,7 +50,7 @@ class SongSerializer(serializers.ModelSerializer):
                 "artist": link.album.artist.name,
                 "track_number": link.track_number,
             }
-            for link in obj.album_songs.select_related("album__artist")
+            for link in obj.album_songs.all()
         ]
 
 
@@ -71,7 +75,7 @@ class AlbumSerializer(serializers.ModelSerializer):
                 "title": link.song.title,
                 "track_number": link.track_number,
             }
-            for link in obj.album_songs.select_related("song").order_by("track_number")
+            for link in obj.album_songs.all()
         ]
 
 

@@ -22,12 +22,12 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgres://qortex:qortex@db:5432/qortex
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-change-me-in-production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-qortex-docker-secret-key-change-in-prod}
       DJANGO_DEBUG: ${DJANGO_DEBUG:-False}
       DJANGO_ALLOWED_HOSTS: "*"
       DB_HOST: db
       DB_PORT: "5432"
-      RUN_SEED: "1"
+      RUN_SEED: "0"
     restart: unless-stopped
 
   frontend:

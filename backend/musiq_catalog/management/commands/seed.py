@@ -105,13 +105,31 @@ SEED_DATA = [
 class Command(BaseCommand):
     help = "Seed the music catalog with sample artists, albums, and songs."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--force",
+            action="store_true",
+            help="Wipe existing catalog data before seeding.",
+        )
+
     @transaction.atomic
     def handle(self, *args, **options):
-        # Wipe catalog data only (keep auth/admin tables intact).
-        AlbumSong.objects.all().delete()
-        Album.objects.all().delete()
-        Song.objects.all().delete()
-        Artist.objects.all().delete()
+        force = options.get("force", False)
+
+        if Artist.objects.exists() and not force:
+            self.stdout.write(
+                self.style.WARNING(
+                    "Catalog already has data. Use --force to wipe and re-seed."
+                )
+            )
+            return
+
+        if force:
+            self.stdout.write("Wiping existing catalog data...")
+            AlbumSong.objects.all().delete()
+            Album.objects.all().delete()
+            Song.objects.all().delete()
+            Artist.objects.all().delete()
 
         artist_count = album_count = song_count = link_count = 0
         song_cache = {}

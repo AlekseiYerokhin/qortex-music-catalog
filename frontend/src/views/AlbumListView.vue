@@ -9,7 +9,6 @@
       v-model="search"
       dense
       outlined
-      debounce="300"
       placeholder="Search albums by title or artist..."
       class="mb-4 q-mb-md"
       clearable
@@ -25,7 +24,7 @@
       :columns="columns"
       row-key="id"
       :loading="albumStore.loading"
-      :pagination="pagination"
+      v-model:pagination="pagination"
       :rows-per-page-options="[5, 10, 20, 50]"
       @request="onRequest"
       flat

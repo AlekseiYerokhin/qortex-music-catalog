@@ -66,14 +66,23 @@
           <div class="flex flex-col sm:flex-row gap-3 items-end">
             <q-select
               v-model="addForm.song"
-              :options="songOptions"
+              :options="filteredSongOptions"
               label="Select Song"
               outlined
               dense
               emit-value
               map-options
+              use-input
+              input-debounce="300"
               class="flex-1 w-full"
-            />
+              @filter="onFilterSong"
+            >
+              <template #no-option>
+                <q-item>
+                  <q-item-section class="text-grey-6">No songs found</q-item-section>
+                </q-item>
+              </template>
+            </q-select>
             <q-input
               v-model.number="addForm.track_number"
               type="number"
@@ -91,11 +100,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAlbumStore } from '../stores/album'
 import { useSongStore } from '../stores/song'
+import { getSongs } from '../api'
 
 const route = useRoute()
 const router = useRouter()
@@ -110,9 +120,20 @@ const albumSongs = computed(() => {
   return [...songs].sort((a, b) => a.track_number - b.track_number)
 })
 
-const songOptions = computed(() =>
-  songStore.songs.map((s) => ({ label: s.title, value: s.id }))
-)
+const filteredSongOptions = ref([])
+
+async function onFilterSong(val, update) {
+  if (!val) {
+    update(() => {
+      filteredSongOptions.value = songStore.songs.map((s) => ({ label: s.title, value: s.id }))
+    })
+    return
+  }
+  update(async () => {
+    const { data } = await getSongs({ search: val, page_size: 50 })
+    filteredSongOptions.value = data.results.map((s) => ({ label: s.title, value: s.id }))
+  })
+}
 
 const addForm = reactive({
   song: null,
@@ -178,6 +199,7 @@ function confirmDeleteAlbum() {
 
 onMounted(async () => {
   await songStore.fetchSongs({ page_size: 100 })
+  filteredSongOptions.value = songStore.songs.map((s) => ({ label: s.title, value: s.id }))
   await reloadAlbum()
 })
 </script>

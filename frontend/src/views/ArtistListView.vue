@@ -9,7 +9,6 @@
       v-model="search"
       dense
       outlined
-      debounce="300"
       placeholder="Search artists..."
       class="mb-4 q-mb-md"
       clearable
@@ -25,7 +24,7 @@
       :columns="columns"
       row-key="id"
       :loading="artistStore.loading"
-      :pagination="pagination"
+      v-model:pagination="pagination"
       :rows-per-page-options="[5, 10, 20, 50]"
       @request="onRequest"
       flat
@@ -51,11 +50,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { useRouter } from 'vue-router'
 import { useArtistStore } from '../stores/artist'
 
 const $q = useQuasar()
-const router = useRouter()
 const artistStore = useArtistStore()
 
 const search = ref('')
