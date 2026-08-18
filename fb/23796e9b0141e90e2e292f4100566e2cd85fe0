@@ -1,0 +1,87 @@
+frontend/src/views/SongDetailView.vue
+  s_2d5db20a261733::t_b5224bf1b60605 60
+  s_2d5db20a261733::t_864008774b0a24 87-93,97-99
+  s_2d5db20a261733::t_c1127ba59e506b 100
+frontend/src/views/AlbumFormView.vue
+  s_2d5db20a261733::t_876b3d22238105 67,72
+  s_2d5db20a261733::t_a98acdb43dc474 139,143-153,155-156
+  s_2d5db20a261733::t_d6e9395dcafab4 109-115
+  s_2d5db20a261733::t_0bb28228a0b2bc 97-98
+frontend/src/views/SongFormView.vue
+  s_2d5db20a261733::t_1969a766fb8dba 68-74
+  s_2d5db20a261733::t_97c9c25a181998 75
+  s_2d5db20a261733::t_98954cc381ba62 32
+backend/API_CONTRACT.md
+  s_2d5db20a261733::t_75a906382d0cdf 8,14-18
+  s_2d5db20a261733::t_2ffeb2416ccae9 209-210
+  s_2d5db20a261733::t_5c246d072b8a4c 225,228-237
+frontend/src/views/ArtistDetailView.vue
+  s_2d5db20a261733::t_de051f2d4ba560 110,117-121
+  s_2d5db20a261733::t_10d034e2d51b49 100-106
+  s_2d5db20a261733::t_4777d6f530caad 64
+backend/Dockerfile
+  s_2d5db20a261733::t_69b891e1125d83 22-25
+backend/qortex/settings.py
+  s_2d5db20a261733::t_2a9b0717ea4ef5 30,96
+backend/musiq_catalog/views.py
+  s_2d5db20a261733::t_b57587d46159e6 1
+  s_2d5db20a261733::t_788d049284c919 93-94,96-101,103-106,108
+  s_2d5db20a261733::t_2a9b0717ea4ef5 47,62,87
+frontend/src/router/index.js
+  s_2d5db20a261733::t_9794fc0b53a03d 77-81
+frontend/src/views/ArtistFormView.vue
+  s_2d5db20a261733::t_5758a88cb39b4c 68-74
+  s_2d5db20a261733::t_e990566335903b 75
+  s_2d5db20a261733::t_d76dcee2152cf5 32
+frontend/src/views/AlbumDetailView.vue
+  s_2d5db20a261733::t_10ff4d6e1aa1cd 180-186
+  s_2d5db20a261733::t_7444e7ed27eab4 132-133
+  s_2d5db20a261733::t_f2be34d6c0f9a6 198-204,208,212-216
+  s_2d5db20a261733::t_8c09700d921a53 103
+.flake8
+  s_2d5db20a261733::t_ffb7ca78d19a2e 1-5
+.github/workflows/ci.yml
+  s_2d5db20a261733::t_ff541fa8e6bfa2 12-27,29-32,47,50-53,63,66,69
+frontend/src/views/SongListView.vue
+  s_2d5db20a261733::t_eeba5d16f98d58 119-130
+.gitignore
+  s_2d5db20a261733::t_e82a7e7b5c9bcc 47
+frontend/src/views/ArtistListView.vue
+  s_2d5db20a261733::t_c940c3210a0e73 113-124
+pyproject.toml
+  s_2d5db20a261733::t_40991172d2d7b1 1-3
+backend/musiq_catalog/management/commands/seed.py
+  s_2d5db20a261733::t_2a9b0717ea4ef5 120
+frontend/src/views/NotFoundView.vue
+  s_2d5db20a261733::t_b54bb15cf5aac8 1-13
+backend/musiq_catalog/models.py
+  s_2d5db20a261733::t_53e70dda826c16 1-2,4-11,31,66
+frontend/src/views/AlbumListView.vue
+  s_2d5db20a261733::t_5b76b0b3fc2b6d 114-125
+backend/musiq_catalog/tests.py
+  s_2d5db20a261733::t_2a9b0717ea4ef5 38,48,140,151,153
+  s_2d5db20a261733::t_9e07ab52a127e0 126
+  s_2d5db20a261733::t_25bdbaea104c00 1-2,7-11
+  s_2d5db20a261733::t_2966a8b803dd13 98
+  s_2d5db20a261733::t_395660564e924a 24
+  s_2d5db20a261733::t_917748db498cb3 65
+  s_2d5db20a261733::t_c1f89fa34e43a4 12
+backend/musiq_catalog/migrations/0003_alter_album_release_year_and_more.py
+  s_2d5db20a261733::t_f413e0b278fb88 1-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "fb23796e9b0141e90e2e292f4100566e2cd85fe0",
+  "prompts": {},
+  "sessions": {
+    "s_2d5db20a261733": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ff02db86bffeJClSMU0TqgK3lQ",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
