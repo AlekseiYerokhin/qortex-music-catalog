@@ -1,0 +1,145 @@
+backend/musiq_catalog/models.py
+  s_cb3e0ed82b9c79::t_55b70d975771ce 40-45
+  s_cb3e0ed82b9c79::t_8012775c95a577 84-87
+frontend/src/views/SongListView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-13,31,39,43-51,55-66,69-76,79-87
+  s_cb3e0ed82b9c79::t_f71a83bd68b131 21,32,98,108-113
+frontend/src/tests/setup.js
+  s_cb3e0ed82b9c79::t_a988adb1f28cf4 1-4
+frontend/src/tests/composables/useResourceTable.test.js
+  s_cb3e0ed82b9c79::t_cc3b78e46771bc 1-3,5-12,15-51
+  s_cb3e0ed82b9c79::t_6cfdec7bf3e356 4,13-14
+README.md
+  s_cb3e0ed82b9c79::t_19e280cefea61d 90,92
+  s_cb3e0ed82b9c79::t_a1b43ca966eeda 126-134
+  s_cb3e0ed82b9c79::t_fcdf18d1e3dae2 142-144
+  s_cb3e0ed82b9c79::t_aa498f5a87cd1b 103-104
+  s_cb3e0ed82b9c79::t_2fffc1ed2411e2 57
+  s_cb3e0ed82b9c79::t_c9fc0d5f05c7ea 10
+  s_cb3e0ed82b9c79::t_640f743a9649cb 25
+frontend/eslint.config.js
+  s_cb3e0ed82b9c79::t_298dbd895fc7eb 1-16
+backend/qortex/settings.py
+  s_cb3e0ed82b9c79::t_91b5234a0d38ab 9,23,33-36,50,103-123,160-167,176-187,191-196,202,214-215,220-225
+  s_cb3e0ed82b9c79::t_12856a6039ca84 226
+frontend/src/views/ArtistFormView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 3-7,9-11,15-18,21-24,35-48
+  s_cb3e0ed82b9c79::t_aacb7cb8b2c27f 72,80,83
+backend/Dockerfile
+  s_cb3e0ed82b9c79::t_66aa4e39fecb3f 7,10,22-24
+  s_cb3e0ed82b9c79::t_8203d477d656f7 25
+backend/.env.example
+  s_cb3e0ed82b9c79::t_70f266b56a5d9e 3-4,11-14
+frontend/Dockerfile
+  s_cb3e0ed82b9c79::t_3692c0b8e5c9fa 1,6
+.github/workflows/ci.yml
+  s_cb3e0ed82b9c79::t_dc7b6f32006539 49-51
+  s_cb3e0ed82b9c79::t_57bdf0a9517088 44,61-64,78-83,86-100
+frontend/src/tests/stores/album.test.js
+  s_cb3e0ed82b9c79::t_71d28ad9bae1ed 1-3,5-14,17-70
+  s_cb3e0ed82b9c79::t_060141f42d96d7 4,15
+  s_cb3e0ed82b9c79::t_45fde5bcffb371 16
+docker-compose.yml
+  s_cb3e0ed82b9c79::t_dcf119afce90c4 3,16-23,29-30,35,37-38,41-47,53-54
+LICENSE
+  s_cb3e0ed82b9c79::t_a9143451de0752 1-21
+frontend/src/tests/stores/artist.test.js
+  s_cb3e0ed82b9c79::t_9832c9dcdceb03 1-3,5-12,15-78
+  s_cb3e0ed82b9c79::t_5a69b2e0b8ca00 4,13-14
+frontend/src/stores/album.js
+  s_cb3e0ed82b9c79::t_29a9b8aa740f24 11,13-20,22-66
+.github/dependabot.yml
+  s_cb3e0ed82b9c79::t_4c078ac1f582b0 1-22
+frontend/src/views/AlbumFormView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 3-7,9-11,15-18,21-24,50-52,72-85
+  s_cb3e0ed82b9c79::t_258c55a1a020e9 117,127-128,131,153,156,166-168,179
+frontend/src/views/ArtistDetailView.vue
+  s_cb3e0ed82b9c79::t_24b98c93383e8b 12,39-40,141,155,157,179,189-190,192,194-195
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-8,13-16,19-38,44-49,51-56,60-75,80-89,93-96,99-107,111-114,124-129
+frontend/package.json
+  s_cb3e0ed82b9c79::t_a600ca2fa92e29 9-11,24,27-29,33-34
+  s_cb3e0ed82b9c79::t_4c0434aa0804fb 26
+frontend/src/views/AlbumListView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-13,31,39,42-53,56-63,66-74
+  s_cb3e0ed82b9c79::t_2b7605d0f0513c 21,32,85,96-100
+frontend/src/tests/views/NotFoundView.test.js
+  s_cb3e0ed82b9c79::t_b00c7f6161d603 1-3,5-21
+  s_cb3e0ed82b9c79::t_5b47099869be4a 4
+frontend/src/views/NotFoundView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-22
+backend/musiq_catalog/tests.py
+  s_cb3e0ed82b9c79::t_ffbdd539a633ec 30,37,41-56,58,62-65,73,78,83-95,104,110,117-154,156,162,164-167,170,173-184,193,198,202-206,208,213-216,218,222-227,236-241,244,253,258-287,293-294,296-310,312-350,352-366
+  s_cb3e0ed82b9c79::t_2f2050b4c37a33 311
+  s_cb3e0ed82b9c79::t_2bf57492c768ef 4,67,163,290,295,351
+frontend/src/views/SongFormView.vue
+  s_cb3e0ed82b9c79::t_38faef851884d5 72,80,83
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 3-7,9-11,15-18,21-24,35-48
+pyproject.toml
+  s_cb3e0ed82b9c79::t_631678ac188c09 4-8
+backend/requirements.txt
+  s_cb3e0ed82b9c79::t_96441f96271bea 1-10
+backend/requirements-dev.txt
+  s_cb3e0ed82b9c79::t_d57dd4a8d6e3b9 1-3,5
+  s_cb3e0ed82b9c79::t_475c628933009c 4
+frontend/vite.config.js
+  s_cb3e0ed82b9c79::t_5d2b531ca03d91 18-20,22
+  s_cb3e0ed82b9c79::t_15d08e20cd7b8c 21
+frontend/src/layouts/MainLayout.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 2-9,11-26,31-36,38-43,47
+frontend/src/router/index.js
+  s_cb3e0ed82b9c79::t_f79ef5d738f175 26,31,46,51,66,71,75-79
+frontend/src/views/AlbumDetailView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-18,23-26,29-48,54-59,61-63,71-86,90-94,96-98,108-115,119-131,138-141,147-151,153-155,172-174,188-195
+  s_cb3e0ed82b9c79::t_099a35b504a027 22,49-50,184-185,216-218,230,240-241,254,303,313-322
+  s_cb3e0ed82b9c79::t_738750960e971a 196
+frontend/.env.example
+  s_cb3e0ed82b9c79::t_1510f4c39975d4 1
+frontend/src/stores/song.js
+  s_cb3e0ed82b9c79::t_e080877a78a480 8,10-15
+backend/qortex/urls.py
+  s_cb3e0ed82b9c79::t_1979168b592bbd 3,7-9
+frontend/src/tests/stores/song.test.js
+  s_cb3e0ed82b9c79::t_158b88f257a4cb 1-3,5-11,14-54
+  s_cb3e0ed82b9c79::t_2850ae6e802bd6 4,12-13
+frontend/src/composables/useResourceTable.js
+  s_cb3e0ed82b9c79::t_1d2cb818d581a5 1-100
+frontend/src/views/DashboardView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-9,12-24,27-30,40-47,49-52
+  s_cb3e0ed82b9c79::t_8cfc5dc5815703 25-26,72,82-89,91
+frontend/src/stores/artist.js
+  s_cb3e0ed82b9c79::t_b0efe0e201342c 8,10-15
+frontend/src/views/ArtistListView.vue
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-13,31,39,42-53,56-63,66-74
+  s_cb3e0ed82b9c79::t_78faf1e8ad6593 21,32,85,95-100
+backend/musiq_catalog/migrations/0004_album_release_year_and_more.py
+  s_cb3e0ed82b9c79::t_17116cac676080 1-25
+backend/API_CONTRACT.md
+  s_cb3e0ed82b9c79::t_9645b9d4e6083e 28-29
+  s_cb3e0ed82b9c79::t_18b017a120b4b8 3,35,56,71,79,92,97,126,153,175,178,186,189,201,217,241,251,280,293,296,304,315-333
+frontend/src/stores/createCrudStore.js
+  s_cb3e0ed82b9c79::t_5a1c7d20ff78a8 1-114
+frontend/src/views/SongDetailView.vue
+  s_cb3e0ed82b9c79::t_f946aab8088b11 12,39-40,130,140-142,160,169-179,181
+  s_cb3e0ed82b9c79::t_409e1d2bbb3492 4-8,13-16,19-38,44-49,51-56,60-75,79-81,83-91,104-111,116-119
+backend/musiq_catalog/views.py
+  s_cb3e0ed82b9c79::t_2bf57492c768ef 2
+  s_cb3e0ed82b9c79::t_ac9015c23d1228 82-85
+frontend/package-lock.json
+  s_cb3e0ed82b9c79::t_f48899588c7c76 19,22,24-26,30-31,47-60,107-221,613-840,934-940,1229-1239,1627-1633,1648-1652,1655-1661,1664-1668,1671-1688,1691-1695,1698-1808,1875-1928,1941-1986,2028-2044,2100-2106,2133-2150,2198-2207,2221-2230,2262-2305,2322-2341,2364-2396,2410-2430,2437-2450,2468-2491,2540-2543,2545,2547-2616,2646-2652,2729-2924,2931-2957,2988-3001,3030-3042,3056-3093,3114-3130,3222-3243,3257-3295,3308-3317,3357-3361,3364,3367,3370-3373,3375-3469,3510-3519,3543-3572,3583-3754,3775-3818,3895-3917,3954-3960,3979-3994,4005-4024,4045-4048,4050-4061,4063-4066,4069-4071,4073,4076,4079-4222,4425-4441,4451-4460,4543-4552,4610-4616,4641-4647,4669-4737,4747-4877,4901-4904,4907-4920,4927-4933,5059-5072,5090-5139,5153-5178,5186-5211,5243-5252,5320-5408,5430-5436,5463-5535,5550-5810
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "86e107d5f2da4483e41208c6f6b41f3a5fec64af",
+  "prompts": {},
+  "sessions": {
+    "s_cb3e0ed82b9c79": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fe9d9dc65ffeybpCYs4rdKOWV1",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
