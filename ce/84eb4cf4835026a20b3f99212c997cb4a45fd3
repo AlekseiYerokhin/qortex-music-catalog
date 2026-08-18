@@ -1,0 +1,94 @@
+backend/entrypoint.sh
+  s_cb3e0ed82b9c79::t_ac659e4ea08cc8 4-15,34
+  s_cb3e0ed82b9c79::t_b140d39d1c0c0f 24
+backend/qortex/settings.py
+  s_cb3e0ed82b9c79::t_b3648147dc2201 185
+  s_cb3e0ed82b9c79::t_22eac795d14815 218
+  s_cb3e0ed82b9c79::t_ac49287a454ce8 233-234,236,246-248,250-281
+  s_cb3e0ed82b9c79::t_cc340aee2b437b 249
+frontend/src/router/index.js
+  s_cb3e0ed82b9c79::t_d158e66be1e880 85
+backend/qortex/urls.py
+  s_cb3e0ed82b9c79::t_cec1d51947e595 2,12-19
+  s_cb3e0ed82b9c79::t_8128d5d10942fb 20
+.gitignore
+  h_5fd012f9b7458f 24
+frontend/src/views/ArtistDetailView.vue
+  s_cb3e0ed82b9c79::t_c31c79f6e8ea3e 141,159-160,164,191-192,196,199,206-207
+frontend/nginx.conf
+  s_cb3e0ed82b9c79::t_092ea64433c638 5-23,30-33
+  s_cb3e0ed82b9c79::t_0d58ec28e69858 34-35
+docker-compose.yml
+  s_cb3e0ed82b9c79::t_2a2c36e27ffbca 41
+  s_cb3e0ed82b9c79::t_d38ac7155e7c02 34
+  s_cb3e0ed82b9c79::t_3c23811a4be1a4 7
+  s_cb3e0ed82b9c79::t_d6f9bca62c30dc 43
+frontend/src/views/SongDetailView.vue
+  s_cb3e0ed82b9c79::t_c47bf5171824ee 130,169-170,172-173,177,179,186-187
+frontend/src/tests/stores/song.test.js
+  s_cb3e0ed82b9c79::t_4f0ee4eeaa47c3 31
+backend/musiq_catalog/models.py
+  s_cb3e0ed82b9c79::t_2aa68955ff65a2 25
+  s_cb3e0ed82b9c79::t_791673d509b980 52
+frontend/src/composables/useResourceTable.js
+  s_cb3e0ed82b9c79::t_f67db93d837171 105
+  s_cb3e0ed82b9c79::t_450dd800a6e600 24,36,47-52
+frontend/src/stores/album.js
+  s_cb3e0ed82b9c79::t_7ca73b747172af 24,27,29,32-35,39
+.github/workflows/ci.yml
+  s_cb3e0ed82b9c79::t_997db1b7454233 78-79
+  s_cb3e0ed82b9c79::t_8061d3e157a364 40-43
+frontend/src/tests/stores/artist.test.js
+  s_cb3e0ed82b9c79::t_7eb8405e638ea2 34
+.flake8
+  s_cb3e0ed82b9c79::t_877e4698a6257e 3
+frontend/package.json
+  s_cb3e0ed82b9c79::t_8bb247d3f67df5 10
+backend/.dockerignore
+  s_cb3e0ed82b9c79::t_a04884a9cd8249 7
+backend/API_CONTRACT.md
+  s_cb3e0ed82b9c79::t_ab94e72f40fc0c 3
+frontend/src/tests/stores/album.test.js
+  s_cb3e0ed82b9c79::t_27c21d587e9c1b 34
+  s_cb3e0ed82b9c79::t_564e1bc52d86d2 54
+frontend/src/views/AlbumDetailView.vue
+  s_cb3e0ed82b9c79::t_741f6292298a99 205,253-254,312-313,315-317,321,324,326,333-334
+frontend/src/stores/createCrudStore.js
+  s_cb3e0ed82b9c79::t_6f59e4950ff491 61,64,66,70-73,77
+  s_cb3e0ed82b9c79::t_17bc981d8f2c6d 16-26
+  s_cb3e0ed82b9c79::t_ccef5372589882 52-58
+backend/musiq_catalog/views.py
+  s_cb3e0ed82b9c79::t_cc340aee2b437b 53,62,66
+  s_cb3e0ed82b9c79::t_ed352f3967fd75 16-26,40-41,76-78,122-124,127,136,140
+  s_cb3e0ed82b9c79::t_889ae79fbcaf6a 42
+frontend/src/api/index.js
+  s_cb3e0ed82b9c79::t_e75ce1813ee2e3 36
+  s_cb3e0ed82b9c79::t_9785b9872bbe59 44
+  s_cb3e0ed82b9c79::t_48660535628a16 54
+  s_cb3e0ed82b9c79::t_d86469a366d7b5 40-41
+  s_cb3e0ed82b9c79::t_50635485ec0deb 11-13
+  s_cb3e0ed82b9c79::t_1dfb020e50952a 53
+backend/musiq_catalog/migrations/0005_add_db_indexes.py
+  s_cb3e0ed82b9c79::t_549ab6e4a6d473 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ce84eb4cf4835026a20b3f99212c997cb4a45fd3",
+  "prompts": {},
+  "humans": {
+    "h_5fd012f9b7458f": {
+      "author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  },
+  "sessions": {
+    "s_cb3e0ed82b9c79": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fe9d9dc65ffeybpCYs4rdKOWV1",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
