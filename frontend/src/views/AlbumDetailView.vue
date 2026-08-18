@@ -202,7 +202,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAlbumStore } from '../stores/album'
@@ -250,8 +250,8 @@ const songColumns = [
   { name: 'actions', label: '', field: 'actions', align: 'right', sortable: false },
 ]
 
-async function reloadAlbum() {
-  await albumStore.fetchDetail(route.params.id)
+async function reloadAlbum(signal) {
+  await albumStore.fetchDetail(route.params.id, { signal })
 }
 
 async function onAddSong() {
@@ -309,20 +309,27 @@ function confirmDeleteAlbum() {
   })
 }
 
+let abortController = null
+
 async function loadAlbumDetail() {
+  abortController?.abort()
+  abortController = new AbortController()
+  const signal = abortController.signal
   loadError.value = null
   albumStore.clearCurrent()
   try {
-    const { data } = await getSongs({ page_size: 100 })
+    const { data } = await getSongs({ page_size: 100 }, { signal })
     songOptions.value = data.results || []
     filteredSongOptions.value = songOptions.value.map((s) => ({ label: s.title, value: s.id }))
-    await reloadAlbum()
+    await reloadAlbum(signal)
   } catch (e) {
-    loadError.value = e
+    if (e.code !== 'ERR_CANCELED') loadError.value = e
   }
 }
 
 watch(() => route.params.id, loadAlbumDetail)
 
 onMounted(loadAlbumDetail)
+
+onUnmounted(() => abortController?.abort())
 </script>

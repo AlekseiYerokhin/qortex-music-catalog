@@ -21,6 +21,7 @@ export function useResourceTable(store, options = {}) {
 
   const $q = useQuasar()
   const search = ref('')
+  const tableError = ref(null)
   const pagination = ref({
     page: 1,
     rowsPerPage: 10,
@@ -32,6 +33,7 @@ export function useResourceTable(store, options = {}) {
   let searchTimer = null
 
   async function fetchTable() {
+    tableError.value = null
     const params = {
       page: pagination.value.page,
       page_size: pagination.value.rowsPerPage,
@@ -42,8 +44,12 @@ export function useResourceTable(store, options = {}) {
         ? `-${pagination.value.sortBy}`
         : pagination.value.sortBy
     }
-    const data = await store.fetchList(params)
-    pagination.value.rowsNumber = data.count
+    try {
+      const data = await store.fetchList(params)
+      pagination.value.rowsNumber = data.count
+    } catch (e) {
+      tableError.value = e.message
+    }
   }
 
   function onRequest(props) {
@@ -96,5 +102,5 @@ export function useResourceTable(store, options = {}) {
   onMounted(fetchTable)
   onUnmounted(() => clearTimeout(searchTimer))
 
-  return { search, pagination, fetchTable, onRequest, onSearch, confirmDelete }
+  return { search, pagination, tableError, fetchTable, onRequest, onSearch, confirmDelete }
 }

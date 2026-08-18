@@ -31,7 +31,7 @@ describe('useArtistStore', () => {
   it('fetchDetail sets currentItem', async () => {
     const store = useArtistStore()
     const data = await store.fetchDetail(1)
-    expect(getArtist).toHaveBeenCalledWith(1)
+    expect(getArtist).toHaveBeenCalledWith(1, { signal: undefined })
     expect(store.currentItem).toEqual({ id: 1, name: 'A', albums_count: 2 })
     expect(data.name).toBe('A')
   })

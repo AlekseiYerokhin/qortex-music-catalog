@@ -1,6 +1,6 @@
 # API Contract — Qortex Music Catalog
 
-Base URL: `http://localhost:8000/api/v1/v1`
+Base URL: `http://localhost:8000/api/v1`
 No authentication required. All endpoints accept/return JSON.
 
 ## Conventions

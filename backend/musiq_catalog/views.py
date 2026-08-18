@@ -13,6 +13,17 @@ from .serializers import (
     SongSerializer,
 )
 
+# --- Shared prefetch constants (avoid duplication across views) ---
+
+_album_songs_prefetch = Prefetch(
+    "album_songs",
+    queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
+)
+_song_album_songs_prefetch = Prefetch(
+    "album_songs",
+    queryset=AlbumSong.objects.select_related("album__artist"),
+)
+
 
 class ArtistListCreate(generics.ListCreateAPIView):
     serializer_class = ArtistSerializer
@@ -24,8 +35,10 @@ class ArtistListCreate(generics.ListCreateAPIView):
 
 
 class ArtistDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
+
+    def get_queryset(self):
+        return Artist.objects.annotate(albums_count=Count("albums"))
 
 
 class ArtistAlbumsList(generics.ListAPIView):
@@ -37,16 +50,7 @@ class ArtistAlbumsList(generics.ListAPIView):
 
     def get_queryset(self):
         artist = get_object_or_404(Artist, pk=self.kwargs["pk"])
-        return (
-            Album.objects.filter(artist=artist)
-            .select_related("artist")
-            .prefetch_related(
-                Prefetch(
-                    "album_songs",
-                    queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
-                )
-            )
-        )
+        return Album.objects.filter(artist=artist).select_related("artist").prefetch_related(_album_songs_prefetch)
 
 
 class AlbumListCreate(generics.ListCreateAPIView):
@@ -55,21 +59,11 @@ class AlbumListCreate(generics.ListCreateAPIView):
     ordering_fields = ["id", "title", "release_year"]
 
     def get_queryset(self):
-        return Album.objects.select_related("artist").prefetch_related(
-            Prefetch(
-                "album_songs",
-                queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
-            )
-        )
+        return Album.objects.select_related("artist").prefetch_related(_album_songs_prefetch)
 
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Album.objects.select_related("artist").prefetch_related(
-        Prefetch(
-            "album_songs",
-            queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
-        )
-    )
+    queryset = Album.objects.select_related("artist").prefetch_related(_album_songs_prefetch)
     serializer_class = AlbumSerializer
 
 
@@ -78,6 +72,9 @@ class AlbumSongListCreate(generics.ListCreateAPIView):
     GET  /api/albums/<pk>/songs/   -> list AlbumSong entries for the album.
     POST /api/albums/<pk>/songs/   -> add a song to the album with a track number.
     """
+
+    search_fields = ["song__title"]
+    ordering_fields = ["id", "track_number", "song__title"]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -122,18 +119,12 @@ class AlbumSongDetail(generics.DestroyAPIView):
     Removes a song from an album (deletes the AlbumSong link).
     """
 
-    def delete(self, request, *args, **kwargs):
-        get_object_or_404(Album, pk=self.kwargs["pk"])
-        deleted, _ = AlbumSong.objects.filter(
+    def get_object(self):
+        return get_object_or_404(
+            AlbumSong,
             album_id=self.kwargs["pk"],
             song_id=self.kwargs["song_pk"],
-        ).delete()
-        if deleted == 0:
-            return Response(
-                {"detail": "Not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        )
 
 
 class SongListCreate(generics.ListCreateAPIView):
@@ -142,19 +133,9 @@ class SongListCreate(generics.ListCreateAPIView):
     ordering_fields = ["id", "title"]
 
     def get_queryset(self):
-        return Song.objects.prefetch_related(
-            Prefetch(
-                "album_songs",
-                queryset=AlbumSong.objects.select_related("album__artist"),
-            )
-        )
+        return Song.objects.prefetch_related(_song_album_songs_prefetch)
 
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Song.objects.prefetch_related(
-        Prefetch(
-            "album_songs",
-            queryset=AlbumSong.objects.select_related("album__artist"),
-        )
-    )
+    queryset = Song.objects.prefetch_related(_song_album_songs_prefetch)
     serializer_class = SongSerializer

@@ -13,6 +13,17 @@ import { defineStore } from 'pinia'
 export function createCrudStore(id, api, options = {}) {
   const { extraActions = {}, extraState = {} } = options
 
+  const _builtInActions = [
+    'fetchList', 'fetchCount', 'fetchDetail',
+    'create', 'update', 'remove',
+    'clearCurrent', 'clearItems',
+  ]
+  for (const key of Object.keys(extraActions)) {
+    if (_builtInActions.includes(key)) {
+      throw new Error(`createCrudStore("${id}"): extraAction "${key}" collides with a built-in action`)
+    }
+  }
+
   return defineStore(id, {
     state: () => ({
       items: [],
@@ -38,22 +49,32 @@ export function createCrudStore(id, api, options = {}) {
       },
 
       async fetchCount(params) {
-        const { data } = await api.list({ ...params, page_size: 1 })
-        return data.count
-      },
-
-      async fetchDetail(id) {
-        this.loading = true
-        this.error = null
         try {
-          const { data } = await api.retrieve(id)
-          this.currentItem = data
-          return data
+          const { data } = await api.list({ ...params, page_size: 1 })
+          return data.count
         } catch (e) {
           this.error = e.message
           throw e
+        }
+      },
+
+      async fetchDetail(id, options = {}) {
+        this.loading = true
+        this.error = null
+        let cancelled = false
+        try {
+          const { data } = await api.retrieve(id, { signal: options.signal })
+          this.currentItem = data
+          return data
+        } catch (e) {
+          if (e.code === 'ERR_CANCELED') {
+            cancelled = true
+            return
+          }
+          this.error = e.message
+          throw e
         } finally {
-          this.loading = false
+          if (!cancelled) this.loading = false
         }
       },
 

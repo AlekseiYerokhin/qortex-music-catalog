@@ -31,7 +31,7 @@ describe('useAlbumStore', () => {
   it('fetchDetail sets currentItem', async () => {
     const store = useAlbumStore()
     await store.fetchDetail(1)
-    expect(getAlbum).toHaveBeenCalledWith(1)
+    expect(getAlbum).toHaveBeenCalledWith(1, { signal: undefined })
     expect(store.currentItem).toEqual({ id: 1, title: 'A', artist: 1, artist_name: 'X', release_year: 2020, songs: [] })
   })
 
@@ -51,7 +51,7 @@ describe('useAlbumStore', () => {
   it('fetchAlbumsByArtist calls getArtistAlbums', async () => {
     const store = useAlbumStore()
     const result = await store.fetchAlbumsByArtist(1)
-    expect(getArtistAlbums).toHaveBeenCalledWith(1)
+    expect(getArtistAlbums).toHaveBeenCalledWith(1, {}, { signal: undefined })
     expect(result).toEqual([{ id: 1, title: 'A' }])
   })
 

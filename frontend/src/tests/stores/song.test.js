@@ -28,7 +28,7 @@ describe('useSongStore', () => {
   it('fetchDetail sets currentItem', async () => {
     const store = useSongStore()
     await store.fetchDetail(1)
-    expect(getSong).toHaveBeenCalledWith(1)
+    expect(getSong).toHaveBeenCalledWith(1, { signal: undefined })
     expect(store.currentItem).toEqual({ id: 1, title: 'A', albums: [] })
   })
 

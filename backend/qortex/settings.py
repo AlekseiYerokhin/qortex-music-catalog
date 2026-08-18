@@ -182,7 +182,7 @@ if not DEBUG and not TESTING:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 86400
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -215,7 +215,7 @@ REST_FRAMEWORK = {
         "anon": "60/min",
     },
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "NUM_PROXIES": 1,
+    "NUM_PROXIES": int(os.environ.get("DJANGO_NUM_PROXIES", "1")),
     "SEARCH_PARAM": "search",
     "ORDERING_PARAM": "ordering",
 }
@@ -230,8 +230,10 @@ SPECTACULAR_SETTINGS = {
 
 # CORS
 # Allow the Vue dev server and the containerized frontend (nginx on :80).
+# Additional origins can be configured via DJANGO_CORS_ORIGINS env var
+# (comma-separated, e.g. "https://app.example.com,https://admin.example.com").
 
-CORS_ALLOWED_ORIGINS = [
+_default_cors_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:8080",
@@ -241,3 +243,39 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
 ]
+
+_extra_cors = os.environ.get("DJANGO_CORS_ORIGINS", "")
+if _extra_cors:
+    _default_cors_origins.extend(origin.strip() for origin in _extra_cors.split(",") if origin.strip())
+
+CORS_ALLOWED_ORIGINS = _default_cors_origins
+
+
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.environ.get("DJANGO_LOG_LEVEL", "INFO"),
+        },
+        "musiq_catalog": {
+            "handlers": ["console"],
+            "level": os.environ.get("MUSIQ_LOG_LEVEL", "INFO"),
+        },
+    },
+}

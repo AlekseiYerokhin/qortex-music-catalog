@@ -21,6 +21,7 @@ frontend/dist/
 
 # IDE
 .vscode/
+.opencode/
 .idea/
 *.swp
 *.swo

@@ -8,6 +8,9 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.code === 'ERR_CANCELED') {
+      return Promise.reject(error)
+    }
     let message = 'An unexpected error occurred'
     if (error.response) {
       const data = error.response.data
@@ -30,15 +33,15 @@ api.interceptors.response.use(
 )
 
 export const getArtists = (params) => api.get('/artists/', { params })
-export const getArtist = (id) => api.get(`/artists/${id}/`)
+export const getArtist = (id, config) => api.get(`/artists/${id}/`, config)
 export const createArtist = (data) => api.post('/artists/', data)
 export const updateArtist = (id, data) => api.put(`/artists/${id}/`, data)
 export const deleteArtist = (id) => api.delete(`/artists/${id}/`)
-export const getArtistAlbums = (id, params) =>
-  api.get(`/artists/${id}/albums/`, { params })
+export const getArtistAlbums = (id, params, config) =>
+  api.get(`/artists/${id}/albums/`, { params, ...config })
 
 export const getAlbums = (params) => api.get('/albums/', { params })
-export const getAlbum = (id) => api.get(`/albums/${id}/`)
+export const getAlbum = (id, config) => api.get(`/albums/${id}/`, config)
 export const createAlbum = (data) => api.post('/albums/', data)
 export const updateAlbum = (id, data) => api.put(`/albums/${id}/`, data)
 export const deleteAlbum = (id) => api.delete(`/albums/${id}/`)
@@ -47,8 +50,8 @@ export const addSongToAlbum = (albumId, data) =>
 export const removeSongFromAlbum = (albumId, songId) =>
   api.delete(`/albums/${albumId}/songs/${songId}/`)
 
-export const getSongs = (params) => api.get('/songs/', { params })
-export const getSong = (id) => api.get(`/songs/${id}/`)
+export const getSongs = (params, config) => api.get('/songs/', { params, ...config })
+export const getSong = (id, config) => api.get(`/songs/${id}/`, config)
 export const createSong = (data) => api.post('/songs/', data)
 export const updateSong = (id, data) => api.put(`/songs/${id}/`, data)
 export const deleteSong = (id) => api.delete(`/songs/${id}/`)

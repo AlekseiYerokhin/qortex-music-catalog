@@ -138,7 +138,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useArtistStore } from '../stores/artist'
@@ -156,10 +156,12 @@ const loadError = ref(null)
 
 const artist = computed(() => artistStore.currentItem)
 
+let abortController = null
+
 async function loadAlbums() {
   albumsLoading.value = true
   try {
-    albums.value = await albumStore.fetchAlbumsByArtist(route.params.id)
+    albums.value = await albumStore.fetchAlbumsByArtist(route.params.id, { signal: abortController?.signal })
   } catch {
     /* handled by interceptor */
   } finally {
@@ -186,17 +188,21 @@ function confirmDelete() {
 }
 
 async function loadArtist() {
+  abortController?.abort()
+  abortController = new AbortController()
   loadError.value = null
   artistStore.clearCurrent()
   try {
-    await artistStore.fetchDetail(route.params.id)
+    await artistStore.fetchDetail(route.params.id, { signal: abortController.signal })
     await loadAlbums()
   } catch (e) {
-    loadError.value = e
+    if (e.code !== 'ERR_CANCELED') loadError.value = e
   }
 }
 
 watch(() => route.params.id, loadArtist)
 
 onMounted(loadArtist)
+
+onUnmounted(() => abortController?.abort())
 </script>

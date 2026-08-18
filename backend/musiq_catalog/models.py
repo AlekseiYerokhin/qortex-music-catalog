@@ -22,7 +22,7 @@ class Artist(models.Model):
 
 
 class Album(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, db_index=True)
     artist = models.ForeignKey(
         Artist,
         on_delete=models.CASCADE,
@@ -49,7 +49,7 @@ class Album(models.Model):
 
 
 class Song(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, db_index=True)
 
     class Meta:
         ordering = ["title"]

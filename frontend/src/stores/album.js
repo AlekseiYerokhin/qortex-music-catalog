@@ -21,17 +21,22 @@ export const useAlbumStore = createCrudStore(
   },
   {
     extraActions: {
-      async fetchAlbumsByArtist(artistId) {
+      async fetchAlbumsByArtist(artistId, options = {}) {
         this.loading = true
         this.error = null
+        let cancelled = false
         try {
-          const { data } = await getArtistAlbums(artistId)
+          const { data } = await getArtistAlbums(artistId, {}, { signal: options.signal })
           return data.results || []
         } catch (e) {
+          if (e.code === 'ERR_CANCELED') {
+            cancelled = true
+            return []
+          }
           this.error = e.message
           throw e
         } finally {
-          this.loading = false
+          if (!cancelled) this.loading = false
         }
       },
 

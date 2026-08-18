@@ -127,7 +127,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useSongStore } from '../stores/song'
@@ -166,17 +166,23 @@ function confirmDelete() {
   })
 }
 
+let abortController = null
+
 async function loadSong() {
+  abortController?.abort()
+  abortController = new AbortController()
   loadError.value = null
   songStore.clearCurrent()
   try {
-    await songStore.fetchDetail(route.params.id)
+    await songStore.fetchDetail(route.params.id, { signal: abortController.signal })
   } catch (e) {
-    loadError.value = e
+    if (e.code !== 'ERR_CANCELED') loadError.value = e
   }
 }
 
 watch(() => route.params.id, loadSong)
 
 onMounted(loadSong)
+
+onUnmounted(() => abortController?.abort())
 </script>
