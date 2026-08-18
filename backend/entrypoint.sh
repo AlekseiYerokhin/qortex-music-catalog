@@ -20,8 +20,5 @@ if [ "${DJANGO_SUPERUSER_USERNAME:-}" ]; then
   python manage.py createsuperuser --noinput || true
 fi
 
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
-
 echo "Starting Gunicorn on :8000..."
 exec gunicorn qortex.wsgi:application --bind 0.0.0.0:8000 --workers 3

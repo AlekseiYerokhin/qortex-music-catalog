@@ -1,15 +1,27 @@
 <template>
   <q-page class="p-6 max-w-2xl mx-auto">
-    <q-card flat bordered class="rounded-lg">
+    <q-card
+      flat
+      bordered
+      class="rounded-lg"
+    >
       <q-card-section>
-        <div class="text-h6 text-grey-9">{{ isEdit ? 'Edit Album' : 'New Album' }}</div>
+        <div class="text-h6 text-grey-9">
+          {{ isEdit ? 'Edit Album' : 'New Album' }}
+        </div>
       </q-card-section>
 
       <q-inner-loading :showing="albumStore.loading && isEdit">
-        <q-spinner size="40px" color="primary" />
+        <q-spinner
+          size="40px"
+          color="primary"
+        />
       </q-inner-loading>
 
-      <q-form @submit.prevent="onSave" class="q-gutter-md q-pa-md">
+      <q-form
+        class="q-gutter-md q-pa-md"
+        @submit.prevent="onSave"
+      >
         <q-input
           v-model="form.title"
           label="Album Title *"
@@ -35,7 +47,9 @@
         >
           <template #no-option>
             <q-item>
-              <q-item-section class="text-grey-6">No artists found</q-item-section>
+              <q-item-section class="text-grey-6">
+                No artists found
+              </q-item-section>
             </q-item>
           </template>
         </q-select>
@@ -55,8 +69,20 @@
         />
 
         <div class="flex justify-end gap-3 mt-4">
-          <q-btn flat label="Cancel" no-caps @click="$router.push({ name: 'album-list' })" />
-          <q-btn color="primary" :label="isEdit ? 'Update' : 'Create'" type="submit" unelevated no-caps :loading="albumStore.loading" />
+          <q-btn
+            flat
+            label="Cancel"
+            no-caps
+            @click="$router.push({ name: 'album-list' })"
+          />
+          <q-btn
+            color="primary"
+            :label="isEdit ? 'Update' : 'Create'"
+            type="submit"
+            unelevated
+            no-caps
+            :loading="albumStore.loading"
+          />
         </div>
       </q-form>
     </q-card>
@@ -67,14 +93,12 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { useArtistStore } from '../stores/artist'
 import { useAlbumStore } from '../stores/album'
 import { getArtist, getArtists } from '../api'
 
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()
-const artistStore = useArtistStore()
 const albumStore = useAlbumStore()
 
 const isEdit = computed(() => !!route.params.id)
@@ -90,7 +114,7 @@ const filteredArtistOptions = ref([])
 async function onFilterArtist(val, update) {
   if (!val) {
     update(() => {
-      filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
+      filteredArtistOptions.value = artistOptions.value.map((a) => ({ label: a.name, value: a.id }))
     })
     return
   }
@@ -100,9 +124,11 @@ async function onFilterArtist(val, update) {
   })
 }
 
+const artistOptions = ref([])
+
 async function loadAlbum() {
   if (!isEdit.value) return
-  const data = await albumStore.fetchAlbum(route.params.id)
+  const data = await albumStore.fetchDetail(route.params.id)
   form.title = data.title
   form.artist = data.artist
   form.release_year = data.release_year
@@ -124,10 +150,10 @@ async function onSave() {
     }
     let saved
     if (isEdit.value) {
-      saved = await albumStore.updateAlbum(route.params.id, payload)
+      saved = await albumStore.update(route.params.id, payload)
       $q.notify({ type: 'positive', message: 'Album updated' })
     } else {
-      saved = await albumStore.createAlbum(payload)
+      saved = await albumStore.create(payload)
       $q.notify({ type: 'positive', message: 'Album created' })
     }
     router.push({ name: 'album-detail', params: { id: saved.id } })
@@ -137,8 +163,9 @@ async function onSave() {
 }
 
 async function loadPage() {
-  await artistStore.fetchArtists({ page_size: 100 })
-  filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
+  const { data } = await getArtists({ page_size: 100 })
+  artistOptions.value = data.results || []
+  filteredArtistOptions.value = artistOptions.value.map((a) => ({ label: a.name, value: a.id }))
   await loadAlbum()
 }
 
@@ -149,7 +176,7 @@ watch(() => route.params.id, async (newId) => {
     form.title = ''
     form.artist = null
     form.release_year = null
-    filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
+    filteredArtistOptions.value = artistOptions.value.map((a) => ({ label: a.name, value: a.id }))
   }
 })
 

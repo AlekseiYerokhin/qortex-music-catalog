@@ -1,8 +1,16 @@
 <template>
   <q-page class="p-6 max-w-6xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-grey-9">Artists</h1>
-      <q-btn color="primary" icon="add" label="New Artist" :to="{ name: 'artist-new' }" no-caps />
+      <h1 class="text-2xl font-bold text-grey-9">
+        Artists
+      </h1>
+      <q-btn
+        color="primary"
+        icon="add"
+        label="New Artist"
+        :to="{ name: 'artist-new' }"
+        no-caps
+      />
     </div>
 
     <q-input
@@ -10,7 +18,7 @@
       dense
       outlined
       placeholder="Search artists..."
-      class="mb-4 q-mb-md"
+      class="mb-4"
       clearable
       @update:model-value="onSearch"
     >
@@ -20,25 +28,50 @@
     </q-input>
 
     <q-table
-      :rows="artistStore.artists"
+      v-model:pagination="pagination"
+      :rows="artistStore.items"
       :columns="columns"
       row-key="id"
       :loading="artistStore.loading"
-      v-model:pagination="pagination"
       :rows-per-page-options="[5, 10, 20, 50]"
-      @request="onRequest"
       flat
       bordered
+      @request="onRequest"
     >
       <template #body-cell-actions="props">
-        <q-td :props="props" class="text-right">
-          <q-btn flat dense round icon="visibility" :to="{ name: 'artist-detail', params: { id: props.row.id } }">
+        <q-td
+          :props="props"
+          class="text-right"
+        >
+          <q-btn
+            flat
+            dense
+            round
+            icon="visibility"
+            aria-label="View artist"
+            :to="{ name: 'artist-detail', params: { id: props.row.id } }"
+          >
             <q-tooltip>View</q-tooltip>
           </q-btn>
-          <q-btn flat dense round icon="edit" :to="{ name: 'artist-edit', params: { id: props.row.id } }">
+          <q-btn
+            flat
+            dense
+            round
+            icon="edit"
+            aria-label="Edit artist"
+            :to="{ name: 'artist-edit', params: { id: props.row.id } }"
+          >
             <q-tooltip>Edit</q-tooltip>
           </q-btn>
-          <q-btn flat dense round icon="delete" color="negative" @click="confirmDelete(props.row)">
+          <q-btn
+            flat
+            dense
+            round
+            icon="delete"
+            color="negative"
+            aria-label="Delete artist"
+            @click="confirmDelete(props.row)"
+          >
             <q-tooltip>Delete</q-tooltip>
           </q-btn>
         </q-td>
@@ -48,21 +81,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useQuasar } from 'quasar'
 import { useArtistStore } from '../stores/artist'
+import { useResourceTable } from '../composables/useResourceTable'
 
-const $q = useQuasar()
 const artistStore = useArtistStore()
-
-const search = ref('')
-const pagination = ref({
-  page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 0,
-  sortBy: 'name',
-  descending: false,
-})
 
 const columns = [
   { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
@@ -70,60 +92,10 @@ const columns = [
   { name: 'actions', label: 'Actions', field: 'actions', align: 'right', sortable: false },
 ]
 
-async function fetchTable() {
-  const params = {
-    page: pagination.value.page,
-    page_size: pagination.value.rowsPerPage,
-  }
-  if (search.value) params.search = search.value
-  if (pagination.value.sortBy) {
-    params.ordering = pagination.value.descending
-      ? `-${pagination.value.sortBy}`
-      : pagination.value.sortBy
-  }
-  const data = await artistStore.fetchArtists(params)
-  pagination.value.rowsNumber = data.count
-}
-
-function onRequest(props) {
-  pagination.value.page = props.pagination.page
-  pagination.value.rowsPerPage = props.pagination.rowsPerPage
-  pagination.value.sortBy = props.pagination.sortBy
-  pagination.value.descending = props.pagination.descending
-  fetchTable()
-}
-
-let searchTimer = null
-function onSearch() {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    pagination.value.page = 1
-    fetchTable()
-  }, 300)
-}
-
-function confirmDelete(artist) {
-  $q.dialog({
-    title: 'Delete Artist',
-    message: `Are you sure you want to delete "${artist.name}"? This will also delete their albums.`,
-    cancel: true,
-    persistent: true,
-    ok: { label: 'Delete', color: 'negative', unelevated: true },
-  }).onOk(async () => {
-    try {
-      await artistStore.deleteArtist(artist.id)
-      $q.notify({ type: 'positive', message: 'Artist deleted' })
-      const remaining = pagination.value.rowsNumber - 1
-      const maxPage = Math.max(1, Math.ceil(remaining / pagination.value.rowsPerPage))
-      if (pagination.value.page > maxPage) {
-        pagination.value.page = maxPage
-      }
-      fetchTable()
-    } catch {
-      /* handled by interceptor */
-    }
-  })
-}
-
-onMounted(fetchTable)
+const { search, pagination, onRequest, onSearch, confirmDelete } = useResourceTable(artistStore, {
+  defaultSort: 'name',
+  entityName: 'Artist',
+  deleteMessage: (artist) =>
+    `Are you sure you want to delete "${artist.name}"? This will also delete their albums.`,
+})
 </script>

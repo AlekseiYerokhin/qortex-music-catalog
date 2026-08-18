@@ -1,6 +1,5 @@
 from django.db import IntegrityError, transaction
-from django.db.models import Count
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -80,7 +79,10 @@ class AlbumSongListCreate(generics.ListCreateAPIView):
     POST /api/albums/<pk>/songs/   -> add a song to the album with a track number.
     """
 
-    serializer_class = AlbumSongSerializer
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return AlbumSongCreateSerializer
+        return AlbumSongSerializer
 
     def get_queryset(self):
         get_object_or_404(Album, pk=self.kwargs["pk"])

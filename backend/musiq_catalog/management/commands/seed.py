@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-
 from musiq_catalog.models import Album, AlbumSong, Artist, Song
 
 SEED_DATA = [

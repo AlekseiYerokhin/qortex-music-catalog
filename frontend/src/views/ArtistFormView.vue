@@ -1,15 +1,27 @@
 <template>
   <q-page class="p-6 max-w-2xl mx-auto">
-    <q-card flat bordered class="rounded-lg">
+    <q-card
+      flat
+      bordered
+      class="rounded-lg"
+    >
       <q-card-section>
-        <div class="text-h6 text-grey-9">{{ isEdit ? 'Edit Artist' : 'New Artist' }}</div>
+        <div class="text-h6 text-grey-9">
+          {{ isEdit ? 'Edit Artist' : 'New Artist' }}
+        </div>
       </q-card-section>
 
       <q-inner-loading :showing="artistStore.loading && isEdit">
-        <q-spinner size="40px" color="primary" />
+        <q-spinner
+          size="40px"
+          color="primary"
+        />
       </q-inner-loading>
 
-      <q-form @submit.prevent="onSave" class="q-gutter-md q-pa-md">
+      <q-form
+        class="q-gutter-md q-pa-md"
+        @submit.prevent="onSave"
+      >
         <q-input
           v-model="form.name"
           label="Artist Name *"
@@ -20,8 +32,20 @@
         />
 
         <div class="flex justify-end gap-3 mt-4">
-          <q-btn flat label="Cancel" no-caps @click="$router.push({ name: 'artist-list' })" />
-          <q-btn color="primary" :label="isEdit ? 'Update' : 'Create'" type="submit" unelevated no-caps :loading="artistStore.loading" />
+          <q-btn
+            flat
+            label="Cancel"
+            no-caps
+            @click="$router.push({ name: 'artist-list' })"
+          />
+          <q-btn
+            color="primary"
+            :label="isEdit ? 'Update' : 'Create'"
+            type="submit"
+            unelevated
+            no-caps
+            :loading="artistStore.loading"
+          />
         </div>
       </q-form>
     </q-card>
@@ -45,7 +69,7 @@ const form = reactive({ name: '' })
 
 async function loadArtist() {
   if (!isEdit.value) return
-  const data = await artistStore.fetchArtist(route.params.id)
+  const data = await artistStore.fetchDetail(route.params.id)
   form.name = data.name
 }
 
@@ -53,10 +77,10 @@ async function onSave() {
   try {
     let saved
     if (isEdit.value) {
-      saved = await artistStore.updateArtist(route.params.id, { name: form.name })
+      saved = await artistStore.update(route.params.id, { name: form.name })
       $q.notify({ type: 'positive', message: 'Artist updated' })
     } else {
-      saved = await artistStore.createArtist({ name: form.name })
+      saved = await artistStore.create({ name: form.name })
       $q.notify({ type: 'positive', message: 'Artist created' })
     }
     router.push({ name: 'artist-detail', params: { id: saved.id } })

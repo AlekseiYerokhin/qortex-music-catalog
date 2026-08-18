@@ -1,15 +1,27 @@
 <template>
   <q-page class="p-6 max-w-2xl mx-auto">
-    <q-card flat bordered class="rounded-lg">
+    <q-card
+      flat
+      bordered
+      class="rounded-lg"
+    >
       <q-card-section>
-        <div class="text-h6 text-grey-9">{{ isEdit ? 'Edit Song' : 'New Song' }}</div>
+        <div class="text-h6 text-grey-9">
+          {{ isEdit ? 'Edit Song' : 'New Song' }}
+        </div>
       </q-card-section>
 
       <q-inner-loading :showing="songStore.loading && isEdit">
-        <q-spinner size="40px" color="primary" />
+        <q-spinner
+          size="40px"
+          color="primary"
+        />
       </q-inner-loading>
 
-      <q-form @submit.prevent="onSave" class="q-gutter-md q-pa-md">
+      <q-form
+        class="q-gutter-md q-pa-md"
+        @submit.prevent="onSave"
+      >
         <q-input
           v-model="form.title"
           label="Song Title *"
@@ -20,8 +32,20 @@
         />
 
         <div class="flex justify-end gap-3 mt-4">
-          <q-btn flat label="Cancel" no-caps @click="$router.push({ name: 'song-list' })" />
-          <q-btn color="primary" :label="isEdit ? 'Update' : 'Create'" type="submit" unelevated no-caps :loading="songStore.loading" />
+          <q-btn
+            flat
+            label="Cancel"
+            no-caps
+            @click="$router.push({ name: 'song-list' })"
+          />
+          <q-btn
+            color="primary"
+            :label="isEdit ? 'Update' : 'Create'"
+            type="submit"
+            unelevated
+            no-caps
+            :loading="songStore.loading"
+          />
         </div>
       </q-form>
     </q-card>
@@ -45,7 +69,7 @@ const form = reactive({ title: '' })
 
 async function loadSong() {
   if (!isEdit.value) return
-  const data = await songStore.fetchSong(route.params.id)
+  const data = await songStore.fetchDetail(route.params.id)
   form.title = data.title
 }
 
@@ -53,10 +77,10 @@ async function onSave() {
   try {
     let saved
     if (isEdit.value) {
-      saved = await songStore.updateSong(route.params.id, { title: form.title })
+      saved = await songStore.update(route.params.id, { title: form.title })
       $q.notify({ type: 'positive', message: 'Song updated' })
     } else {
-      saved = await songStore.createSong({ title: form.title })
+      saved = await songStore.create({ title: form.title })
       $q.notify({ type: 'positive', message: 'Song created' })
     }
     router.push({ name: 'song-detail', params: { id: saved.id } })

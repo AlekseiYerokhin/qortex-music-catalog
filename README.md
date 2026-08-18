@@ -7,7 +7,7 @@ A music catalog management application built with Django REST Framework + Vue 3 
 | Layer | Technology |
 |-------|-----------|
 | Backend | Django 5, Django REST Framework |
-| Database | PostgreSQL 15 |
+| Database | PostgreSQL 16 |
 | Frontend | Vue 3, Vite, Quasar, Tailwind CSS |
 | State Management | Pinia |
 | HTTP Client | Axios |
@@ -22,7 +22,7 @@ A music catalog management application built with Django REST Framework + Vue 3 
 - **Album ↔ Song management** — add/remove songs to albums with track numbers (through model)
 - **Search & filter** — DRF search and ordering on all list endpoints
 - **Admin panel** — Django admin for manual data management
-- **Seeded sample data** — catalog pre-populated with artists, albums, and songs via `python manage.py seed`
+- **Seeded sample data** — catalog pre-populated with artists, albums, and songs via `python manage.py seed` (runs automatically on first `docker compose up`)
 
 ## Project Structure
 
@@ -54,7 +54,7 @@ qortex/
 ### Prerequisites
 
 - Python 3.10+
-- Node 18+
+- Node 20+
 - PostgreSQL
 
 ### Backend
@@ -87,8 +87,9 @@ npm run dev
 
 ### Access
 
-- Backend API: http://localhost:8000/api
+- Backend API: http://localhost:8000/api/v1
 - Frontend: http://localhost:5173
+- Interactive API docs: http://localhost:8000/api/docs/
 
 ## Docker Setup
 
@@ -99,7 +100,8 @@ docker compose up -d --build
 ### Access
 
 - Frontend: http://localhost:8080
-- Backend API: http://localhost:8000/api
+- Backend API: http://localhost:8000/api/v1
+- Interactive API docs: http://localhost:8000/api/docs/
 - Admin panel: http://localhost:8000/admin/
 
 ### Commands
@@ -121,15 +123,15 @@ Full API contract is available at [backend/API_CONTRACT.md](backend/API_CONTRACT
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET / POST | `/api/artists/` | List / create artists |
-| GET / PUT / DELETE | `/api/artists/<id>/` | Retrieve / update / delete artist |
-| GET | `/api/artists/<id>/albums/` | List albums by artist |
-| GET / POST | `/api/albums/` | List / create albums |
-| GET / PUT / DELETE | `/api/albums/<id>/` | Retrieve / update / delete album |
-| GET / POST | `/api/albums/<id>/songs/` | List / add songs to album |
-| DELETE | `/api/albums/<id>/songs/<song_id>/` | Remove song from album |
-| GET / POST | `/api/songs/` | List / create songs |
-| GET / PUT / DELETE | `/api/songs/<id>/` | Retrieve / update / delete song |
+| GET / POST | `/api/v1/artists/` | List / create artists |
+| GET / PUT / DELETE | `/api/v1/artists/<id>/` | Retrieve / update / delete artist |
+| GET | `/api/v1/artists/<id>/albums/` | List albums by artist |
+| GET / POST | `/api/v1/albums/` | List / create albums |
+| GET / PUT / DELETE | `/api/v1/albums/<id>/` | Retrieve / update / delete album |
+| GET / POST | `/api/v1/albums/<id>/songs/` | List / add songs to album |
+| DELETE | `/api/v1/albums/<id>/songs/<song_id>/` | Remove song from album |
+| GET / POST | `/api/v1/songs/` | List / create songs |
+| GET / PUT / DELETE | `/api/v1/songs/<id>/` | Retrieve / update / delete song |
 
 All list endpoints support `?search=`, `?ordering=`, `?page=`, and `?page_size=` query parameters. No authentication required.
 
@@ -137,5 +139,6 @@ All list endpoints support `?search=`, `?ordering=`, `?page=`, and `?page_size=`
 
 The [GitHub Actions workflow](.github/workflows/ci.yml) runs on every push and pull request to `main`:
 
-- **Backend job** — flake8 linting, black formatting check, Django test suite (SQLite)
-- **Frontend job** — dependency install (`npm ci`), production build (`npm run build`)
+- **Backend job** — flake8 linting, isort check, black formatting check, Django test suite (PostgreSQL), missing-migration check, dependency audit
+- **Frontend job** — ESLint, Vitest test suite, dependency install, production build, dependency audit
+- **Docker build job** — builds backend and frontend Docker images

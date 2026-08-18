@@ -41,7 +41,3 @@ pgdata/
 
 # Logs
 *.log
-
-# Review files (local only)
-qortex-catalog-review.html
-qortex-music-catalog-review.md

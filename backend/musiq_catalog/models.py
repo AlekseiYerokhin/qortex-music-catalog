@@ -37,6 +37,12 @@ class Album(models.Model):
 
     class Meta:
         ordering = ["title"]
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(release_year__gte=1860),
+                name="ck_album_release_year_gte_1860",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.title} ({self.release_year})"
@@ -74,6 +80,10 @@ class AlbumSong(models.Model):
             models.UniqueConstraint(
                 fields=["album", "song"],
                 name="uq_album_song",
+            ),
+            models.CheckConstraint(
+                check=models.Q(track_number__gte=1),
+                name="ck_albumsong_track_number_gte_1",
             ),
         ]
         ordering = ["album", "track_number"]

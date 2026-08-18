@@ -1,23 +1,52 @@
 <template>
-  <q-layout view="hHh LpR fFf" class="bg-grey-1">
-    <q-header elevated class="bg-primary text-white">
+  <q-layout
+    view="hHh LpR fFf"
+    class="bg-grey-1"
+  >
+    <q-header
+      elevated
+      class="bg-primary text-white"
+    >
       <q-toolbar class="flex items-center">
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer" />
-        <q-icon name="library_music" size="28px" class="q-mr-sm" />
-        <q-toolbar-title class="text-weight-bold">Qortex</q-toolbar-title>
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleDrawer"
+        />
+        <q-icon
+          name="library_music"
+          size="28px"
+          class="q-mr-sm"
+        />
+        <q-toolbar-title class="text-weight-bold">
+          Qortex
+        </q-toolbar-title>
         <span class="text-caption text-white-7 hidden-sm-and-down">Music Catalog Manager</span>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="drawer" show-if-above bordered class="bg-white">
+    <q-drawer
+      v-model="drawer"
+      show-if-above
+      bordered
+      class="bg-white"
+    >
       <q-list padding>
-        <q-item-label header class="text-grey-8 text-weight-medium">Navigation</q-item-label>
+        <q-item-label
+          header
+          class="text-grey-8 text-weight-medium"
+        >
+          Navigation
+        </q-item-label>
         <q-item
           v-for="link in navLinks"
           :key="link.to"
+          v-ripple
           :to="link.to"
           clickable
-          v-ripple
           exact
           active-class="text-primary bg-blue-1"
         >

@@ -1,22 +1,66 @@
 <template>
   <q-page class="p-6 max-w-5xl mx-auto">
     <q-breadcrumbs class="mb-4">
-      <q-breadcrumbs-el label="Artists" :to="{ name: 'artist-list' }" icon="person" />
-      <q-breadcrumbs-el v-if="album?.artist_name" :label="album.artist_name" :to="{ name: 'artist-detail', params: { id: album.artist } }" />
-      <q-breadcrumbs-el label="Albums" :to="{ name: 'album-list' }" icon="album" />
+      <q-breadcrumbs-el
+        label="Artists"
+        :to="{ name: 'artist-list' }"
+        icon="person"
+      />
+      <q-breadcrumbs-el
+        v-if="album?.artist_name"
+        :label="album.artist_name"
+        :to="{ name: 'artist-detail', params: { id: album.artist } }"
+      />
+      <q-breadcrumbs-el
+        label="Albums"
+        :to="{ name: 'album-list' }"
+        icon="album"
+      />
       <q-breadcrumbs-el :label="album?.title || '...'" />
     </q-breadcrumbs>
 
-    <q-inner-loading :showing="albumStore.loading && !album">
-      <q-spinner size="40px" color="primary" />
+    <q-inner-loading :showing="albumStore.loading && !album && !loadError">
+      <q-spinner
+        size="40px"
+        color="primary"
+      />
     </q-inner-loading>
+
+    <div
+      v-if="loadError && !album"
+      class="text-center py-12"
+    >
+      <q-icon
+        name="error_outline"
+        size="48px"
+        color="negative"
+        class="block mx-auto mb-2"
+      />
+      <p class="text-grey-7 mb-4">
+        Could not load this album.
+      </p>
+      <q-btn
+        color="primary"
+        label="Go back"
+        no-caps
+        unelevated
+        @click="$router.back()"
+      />
+    </div>
 
     <template v-if="album">
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-4">
-          <q-avatar size="56px" color="secondary" text-color="white" icon="album" />
+          <q-avatar
+            size="56px"
+            color="secondary"
+            text-color="white"
+            icon="album"
+          />
           <div>
-            <h1 class="text-2xl font-bold text-grey-9">{{ album.title }}</h1>
+            <h1 class="text-2xl font-bold text-grey-9">
+              {{ album.title }}
+            </h1>
             <p class="text-grey-6">
               <span>{{ album.artist_name }}</span>
               <span v-if="album.release_year"> • {{ album.release_year }}</span>
@@ -24,14 +68,34 @@
           </div>
         </div>
         <div class="flex gap-2">
-          <q-btn outline color="primary" icon="edit" label="Edit" no-caps :to="{ name: 'album-edit', params: { id: album.id } }" />
-          <q-btn outline color="negative" icon="delete" label="Delete" no-caps @click="confirmDeleteAlbum" />
+          <q-btn
+            outline
+            color="primary"
+            icon="edit"
+            label="Edit"
+            no-caps
+            :to="{ name: 'album-edit', params: { id: album.id } }"
+          />
+          <q-btn
+            outline
+            color="negative"
+            icon="delete"
+            label="Delete"
+            no-caps
+            @click="confirmDeleteAlbum"
+          />
         </div>
       </div>
 
-      <q-card flat bordered class="rounded-lg mb-6">
+      <q-card
+        flat
+        bordered
+        class="rounded-lg mb-6"
+      >
         <q-card-section>
-          <div class="text-h6 text-grey-8 mb-4">Songs in this Album</div>
+          <div class="text-h6 text-grey-8 mb-4">
+            Songs in this Album
+          </div>
 
           <q-table
             :rows="albumSongs"
@@ -41,28 +105,54 @@
             :loading="albumStore.loading"
           >
             <template #body-cell-track_number="props">
-              <q-td :props="props" auto-width>
-                <q-badge color="primary" :label="props.row.track_number" />
+              <q-td
+                :props="props"
+                auto-width
+              >
+                <q-badge
+                  color="primary"
+                  :label="props.row.track_number"
+                />
               </q-td>
             </template>
             <template #body-cell-actions="props">
-              <q-td :props="props" class="text-right">
-                <q-btn flat dense round icon="remove_circle_outline" color="negative" @click="confirmRemoveSong(props.row)">
+              <q-td
+                :props="props"
+                class="text-right"
+              >
+                <q-btn
+                  flat
+                  dense
+                  round
+                  icon="remove_circle_outline"
+                  color="negative"
+                  aria-label="Remove song from album"
+                  @click="confirmRemoveSong(props.row)"
+                >
                   <q-tooltip>Remove from album</q-tooltip>
                 </q-btn>
               </q-td>
             </template>
           </q-table>
 
-          <div v-if="albumSongs.length === 0 && !albumStore.loading" class="text-grey-6 text-center py-6">
+          <div
+            v-if="albumSongs.length === 0 && !albumStore.loading"
+            class="text-grey-6 text-center py-6"
+          >
             No songs assigned to this album yet.
           </div>
         </q-card-section>
       </q-card>
 
-      <q-card flat bordered class="rounded-lg">
+      <q-card
+        flat
+        bordered
+        class="rounded-lg"
+      >
         <q-card-section>
-          <div class="text-h6 text-grey-8 mb-4">Add Song to Album</div>
+          <div class="text-h6 text-grey-8 mb-4">
+            Add Song to Album
+          </div>
           <div class="flex flex-col sm:flex-row gap-3 items-end">
             <q-select
               v-model="addForm.song"
@@ -79,7 +169,9 @@
             >
               <template #no-option>
                 <q-item>
-                  <q-item-section class="text-grey-6">No songs found</q-item-section>
+                  <q-item-section class="text-grey-6">
+                    No songs found
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -89,9 +181,19 @@
               label="Track #"
               outlined
               dense
+              min="1"
+              :rules="[val => val >= 1 || 'Track number must be at least 1']"
               style="min-width: 120px"
             />
-            <q-btn color="primary" icon="add" label="Add" unelevated no-caps :loading="albumStore.loading" @click="onAddSong" />
+            <q-btn
+              color="primary"
+              icon="add"
+              label="Add"
+              unelevated
+              no-caps
+              :loading="albumStore.loading"
+              @click="onAddSong"
+            />
           </div>
         </q-card-section>
       </q-card>
@@ -104,16 +206,16 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAlbumStore } from '../stores/album'
-import { useSongStore } from '../stores/song'
 import { getSongs } from '../api'
 
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()
 const albumStore = useAlbumStore()
-const songStore = useSongStore()
 
-const album = computed(() => albumStore.currentAlbum)
+const loadError = ref(null)
+
+const album = computed(() => albumStore.currentItem)
 
 const albumSongs = computed(() => {
   const songs = album.value?.songs || []
@@ -125,7 +227,7 @@ const filteredSongOptions = ref([])
 async function onFilterSong(val, update) {
   if (!val) {
     update(() => {
-      filteredSongOptions.value = songStore.songs.map((s) => ({ label: s.title, value: s.id }))
+      filteredSongOptions.value = songOptions.value.map((s) => ({ label: s.title, value: s.id }))
     })
     return
   }
@@ -134,6 +236,8 @@ async function onFilterSong(val, update) {
     filteredSongOptions.value = data.results.map((s) => ({ label: s.title, value: s.id }))
   })
 }
+
+const songOptions = ref([])
 
 const addForm = reactive({
   song: null,
@@ -147,7 +251,7 @@ const songColumns = [
 ]
 
 async function reloadAlbum() {
-  await albumStore.fetchAlbum(route.params.id)
+  await albumStore.fetchDetail(route.params.id)
 }
 
 async function onAddSong() {
@@ -196,7 +300,7 @@ function confirmDeleteAlbum() {
     ok: { label: 'Delete', color: 'negative', unelevated: true },
   }).onOk(async () => {
     try {
-      await albumStore.deleteAlbum(album.value.id)
+      await albumStore.remove(album.value.id)
       $q.notify({ type: 'positive', message: 'Album deleted' })
       router.push({ name: 'album-list' })
     } catch {
@@ -206,9 +310,16 @@ function confirmDeleteAlbum() {
 }
 
 async function loadAlbumDetail() {
-  await songStore.fetchSongs({ page_size: 100 })
-  filteredSongOptions.value = songStore.songs.map((s) => ({ label: s.title, value: s.id }))
-  await reloadAlbum()
+  loadError.value = null
+  albumStore.clearCurrent()
+  try {
+    const { data } = await getSongs({ page_size: 100 })
+    songOptions.value = data.results || []
+    filteredSongOptions.value = songOptions.value.map((s) => ({ label: s.title, value: s.id }))
+    await reloadAlbum()
+  } catch (e) {
+    loadError.value = e
+  }
 }
 
 watch(() => route.params.id, loadAlbumDetail)

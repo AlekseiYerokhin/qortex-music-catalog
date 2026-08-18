@@ -23,12 +23,12 @@ const routes = [
         component: () => import('../views/ArtistFormView.vue'),
       },
       {
-        path: 'artists/:id',
+        path: 'artists/:id(\\d+)',
         name: 'artist-detail',
         component: () => import('../views/ArtistDetailView.vue'),
       },
       {
-        path: 'artists/:id/edit',
+        path: 'artists/:id(\\d+)/edit',
         name: 'artist-edit',
         component: () => import('../views/ArtistFormView.vue'),
       },
@@ -43,12 +43,12 @@ const routes = [
         component: () => import('../views/AlbumFormView.vue'),
       },
       {
-        path: 'albums/:id',
+        path: 'albums/:id(\\d+)',
         name: 'album-detail',
         component: () => import('../views/AlbumDetailView.vue'),
       },
       {
-        path: 'albums/:id/edit',
+        path: 'albums/:id(\\d+)/edit',
         name: 'album-edit',
         component: () => import('../views/AlbumFormView.vue'),
       },
@@ -63,21 +63,21 @@ const routes = [
         component: () => import('../views/SongFormView.vue'),
       },
       {
-        path: 'songs/:id',
+        path: 'songs/:id(\\d+)',
         name: 'song-detail',
         component: () => import('../views/SongDetailView.vue'),
       },
       {
-        path: 'songs/:id/edit',
+        path: 'songs/:id(\\d+)/edit',
         name: 'song-edit',
         component: () => import('../views/SongFormView.vue'),
       },
+      {
+        path: ':pathMatch(.*)*',
+        name: 'not-found',
+        component: () => import('../views/NotFoundView.vue'),
+      },
     ],
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'not-found',
-    component: () => import('../views/NotFoundView.vue'),
   },
 ]
 
