@@ -1,0 +1,19 @@
+backend/qortex/settings.py
+  s_cb3e0ed82b9c79::t_2bff61f7e6fb79 183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8d80c6d3b98df4422677632151e8bd75f62836af",
+  "prompts": {},
+  "sessions": {
+    "s_cb3e0ed82b9c79": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fe9d9dc65ffeybpCYs4rdKOWV1",
+        "model": "glm-5.1"
+      },
+      "human_author": "Aleksei Yerokhin <ayerokhin@tula.co>"
+    }
+  }
+}
