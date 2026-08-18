@@ -42,8 +42,6 @@ export const getAlbum = (id) => api.get(`/albums/${id}/`)
 export const createAlbum = (data) => api.post('/albums/', data)
 export const updateAlbum = (id, data) => api.put(`/albums/${id}/`, data)
 export const deleteAlbum = (id) => api.delete(`/albums/${id}/`)
-export const getAlbumSongs = (id, params) =>
-  api.get(`/albums/${id}/songs/`, { params })
 export const addSongToAlbum = (albumId, data) =>
   api.post(`/albums/${albumId}/songs/`, data)
 export const removeSongFromAlbum = (albumId, songId) =>

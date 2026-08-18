@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useArtistStore } from '../stores/artist'
@@ -64,6 +64,14 @@ async function onSave() {
     /* handled by interceptor */
   }
 }
+
+watch(() => route.params.id, async (newId) => {
+  if (newId) {
+    await loadArtist()
+  } else {
+    form.name = ''
+  }
+})
 
 onMounted(loadArtist)
 </script>

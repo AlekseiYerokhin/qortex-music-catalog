@@ -19,6 +19,10 @@ COPY . .
 
 RUN chmod +x entrypoint.sh
 
+RUN useradd --create-home --shell /bin/bash appuser
+RUN chown -R appuser:appuser /app
+USER appuser
+
 EXPOSE 8000
 
 ENTRYPOINT ["./entrypoint.sh"]

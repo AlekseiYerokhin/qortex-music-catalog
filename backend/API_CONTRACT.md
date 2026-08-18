@@ -5,12 +5,17 @@ No authentication required. All endpoints accept/return JSON.
 
 ## Conventions
 
-- All list endpoints support **pagination** (DRF PageNumberPagination):
+- All list endpoints support **pagination** (CatalogPagination):
   - `?page=2` — page number
   - `?page_size=10` — items per page (default 20, max 100)
 - All list endpoints support **search** and **ordering**:
   - `?search=foo` — full-text search on configured fields
   - `?ordering=title` — sort ascending; `-title` for descending
+- **Throttling**: anonymous requests are limited to 60/min.
+  A 429 response is returned when the limit is exceeded:
+  ```json
+  {"detail": "Request was throttled. Expected available in X seconds."}
+  ```
 - Error responses use DRF's default format:
   ```json
   {"detail": "Not found."}
@@ -201,8 +206,8 @@ List the AlbumSong links for an album (with song details).
   "next": null,
   "previous": null,
   "results": [
-    {"id": 1, "album": 1, "song": 1, "track_number": 1},
-    {"id": 2, "album": 1, "song": 2, "track_number": 2}
+    {"id": 1, "album": 1, "song": 1, "song_title": "Speak to Me", "track_number": 1},
+    {"id": 2, "album": 1, "song": 2, "song_title": "Breathe", "track_number": 2}
   ]
 }
 ```
@@ -217,11 +222,19 @@ Add a song to an album with a track number. The album is inferred from the URL.
 
 **201 Response:**
 ```json
-{"id": 9, "album": 1, "song": 3, "track_number": 3}
+{"id": 9, "album": 1, "song": 3, "song_title": "New Song", "track_number": 3}
 ```
 
-**400** if `track_number` already exists for this album (unique constraint),
-or if `song` doesn't exist, or fields missing.
+**400** if:
+- `track_number` already exists for this album:
+  ```json
+  {"non_field_errors": ["Track number 3 is already taken on this album."]}
+  ```
+- The song is already on this album:
+  ```json
+  {"non_field_errors": ["This song is already on this album."]}
+  ```
+- `song` doesn't exist or fields missing.
 
 ### `DELETE /api/albums/<id>/songs/<song_id>/`
 Remove a song from an album (deletes the AlbumSong link). The song itself

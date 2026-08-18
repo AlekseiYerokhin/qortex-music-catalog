@@ -1,7 +1,14 @@
-from django.test import TestCase
+from django.conf import settings
+from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
 from musiq_catalog.models import Album, AlbumSong, Artist, Song
+
+_NO_THROTTLE = {
+    **settings.REST_FRAMEWORK,
+    "DEFAULT_THROTTLE_CLASSES": [],
+    "DEFAULT_THROTTLE_RATES": {},
+}
 
 
 def _setup_catalog():
@@ -14,6 +21,7 @@ def _setup_catalog():
     return artist, album, song1, song2
 
 
+@override_settings(REST_FRAMEWORK=_NO_THROTTLE)
 class ArtistAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -27,9 +35,7 @@ class ArtistAPITests(TestCase):
         self.assertEqual(response.data["results"][0]["albums_count"], 1)
 
     def test_create_artist(self):
-        response = self.client.post(
-            "/api/artists/", {"name": "New Artist"}, format="json"
-        )
+        response = self.client.post("/api/artists/", {"name": "New Artist"}, format="json")
         self.assertEqual(response.status_code, 201)
         self.assertTrue(Artist.objects.filter(name="New Artist").exists())
 
@@ -39,9 +45,7 @@ class ArtistAPITests(TestCase):
         self.assertEqual(response.data["name"], "Test Artist")
 
     def test_update_artist(self):
-        response = self.client.put(
-            f"/api/artists/{self.artist.id}/", {"name": "Renamed"}, format="json"
-        )
+        response = self.client.put(f"/api/artists/{self.artist.id}/", {"name": "Renamed"}, format="json")
         self.assertEqual(response.status_code, 200)
         self.artist.refresh_from_db()
         self.assertEqual(self.artist.name, "Renamed")
@@ -58,6 +62,7 @@ class ArtistAPITests(TestCase):
         self.assertEqual(response.data["results"][0]["title"], "Test Album")
 
 
+@override_settings(REST_FRAMEWORK=_NO_THROTTLE)
 class AlbumAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -90,6 +95,7 @@ class AlbumAPITests(TestCase):
         self.assertEqual(AlbumSong.objects.filter(album_id=album_id).count(), 0)
 
 
+@override_settings(REST_FRAMEWORK=_NO_THROTTLE)
 class SongAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -117,6 +123,7 @@ class SongAPITests(TestCase):
         self.assertFalse(Song.objects.filter(id=self.song1.id).exists())
 
 
+@override_settings(REST_FRAMEWORK=_NO_THROTTLE)
 class AlbumSongAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -130,11 +137,7 @@ class AlbumSongAPITests(TestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(
-            AlbumSong.objects.filter(
-                album=self.album, song=self.song3, track_number=3
-            ).exists()
-        )
+        self.assertTrue(AlbumSong.objects.filter(album=self.album, song=self.song3, track_number=3).exists())
 
     def test_duplicate_track_number_rejected(self):
         response = self.client.post(
@@ -145,10 +148,6 @@ class AlbumSongAPITests(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_remove_song_from_album(self):
-        response = self.client.delete(
-            f"/api/albums/{self.album.id}/songs/{self.song1.id}/"
-        )
+        response = self.client.delete(f"/api/albums/{self.album.id}/songs/{self.song1.id}/")
         self.assertEqual(response.status_code, 204)
-        self.assertFalse(
-            AlbumSong.objects.filter(album=self.album, song=self.song1).exists()
-        )
+        self.assertFalse(AlbumSong.objects.filter(album=self.album, song=self.song1).exists())

@@ -116,9 +116,18 @@ function confirmDelete(song) {
     persistent: true,
     ok: { label: 'Delete', color: 'negative', unelevated: true },
   }).onOk(async () => {
-    await songStore.deleteSong(song.id)
-    $q.notify({ type: 'positive', message: 'Song deleted' })
-    fetchTable()
+    try {
+      await songStore.deleteSong(song.id)
+      $q.notify({ type: 'positive', message: 'Song deleted' })
+      const remaining = pagination.value.rowsNumber - 1
+      const maxPage = Math.max(1, Math.ceil(remaining / pagination.value.rowsPerPage))
+      if (pagination.value.page > maxPage) {
+        pagination.value.page = maxPage
+      }
+      fetchTable()
+    } catch {
+      /* handled by interceptor */
+    }
   })
 }
 

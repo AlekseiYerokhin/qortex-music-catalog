@@ -64,12 +64,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useArtistStore } from '../stores/artist'
 import { useAlbumStore } from '../stores/album'
-import { getArtists } from '../api'
+import { getArtist, getArtists } from '../api'
 
 const route = useRoute()
 const router = useRouter()
@@ -94,8 +94,8 @@ async function onFilterArtist(val, update) {
     })
     return
   }
-  update(async () => {
-    const { data } = await getArtists({ search: val, page_size: 50 })
+  const { data } = await getArtists({ search: val, page_size: 50 })
+  update(() => {
     filteredArtistOptions.value = data.results.map((a) => ({ label: a.name, value: a.id }))
   })
 }
@@ -106,6 +106,13 @@ async function loadAlbum() {
   form.title = data.title
   form.artist = data.artist
   form.release_year = data.release_year
+  if (data.artist && !filteredArtistOptions.value.some((a) => a.value === data.artist)) {
+    const { data: artistData } = await getArtist(data.artist)
+    filteredArtistOptions.value = [
+      { label: artistData.name, value: artistData.id },
+      ...filteredArtistOptions.value,
+    ]
+  }
 }
 
 async function onSave() {
@@ -129,9 +136,22 @@ async function onSave() {
   }
 }
 
-onMounted(async () => {
+async function loadPage() {
   await artistStore.fetchArtists({ page_size: 100 })
   filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
   await loadAlbum()
+}
+
+watch(() => route.params.id, async (newId) => {
+  if (newId) {
+    await loadAlbum()
+  } else {
+    form.title = ''
+    form.artist = null
+    form.release_year = null
+    filteredArtistOptions.value = artistStore.artists.map((a) => ({ label: a.name, value: a.id }))
+  }
 })
+
+onMounted(loadPage)
 </script>

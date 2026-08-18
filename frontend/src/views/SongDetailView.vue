@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useSongStore } from '../stores/song'
@@ -84,11 +84,19 @@ function confirmDelete() {
     persistent: true,
     ok: { label: 'Delete', color: 'negative', unelevated: true },
   }).onOk(async () => {
-    await songStore.deleteSong(song.value.id)
-    $q.notify({ type: 'positive', message: 'Song deleted' })
-    router.push({ name: 'song-list' })
+    try {
+      await songStore.deleteSong(song.value.id)
+      $q.notify({ type: 'positive', message: 'Song deleted' })
+      router.push({ name: 'song-list' })
+    } catch {
+      /* handled by interceptor */
+    }
   })
 }
+
+watch(() => route.params.id, (newId) => {
+  if (newId) songStore.fetchSong(newId)
+})
 
 onMounted(() => {
   songStore.fetchSong(route.params.id)

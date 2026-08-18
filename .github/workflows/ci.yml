@@ -9,8 +9,27 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: qortex
+          POSTGRES_PASSWORD: qortex
+          POSTGRES_DB: qortex
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
-      DATABASE_URL: sqlite:///test_db.sqlite3
+      DATABASE_URL: postgres://qortex:qortex@localhost:5432/qortex
+      DJANGO_SECRET_KEY: ci-test-secret-key
+      DJANGO_DEBUG: "False"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -25,10 +44,13 @@ jobs:
           pip install flake8 black
 
       - name: Run flake8
-        run: flake8 backend/ --exclude="backend/venv,**/migrations/*" --max-line-length=120
+        run: flake8 backend/
 
       - name: Run black check
-        run: black --check backend/ --exclude "venv|migrations"
+        run: black --check backend/
+
+      - name: Check for missing migrations
+        run: cd backend && python manage.py makemigrations --check --dry-run
 
       - name: Run Django tests
         run: cd backend && python manage.py test
@@ -38,13 +60,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node 18
+      - name: Set up Node 20
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
       - name: Install dependencies
-        run: cd frontend && (npm ci || npm install)
+        run: cd frontend && npm ci
 
       - name: Build
         run: cd frontend && npm run build

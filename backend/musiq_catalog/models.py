@@ -1,7 +1,14 @@
-from datetime import datetime
-
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
+
+
+def validate_release_year(value):
+    if value < 1860:
+        raise ValidationError("Year must be 1860 or later.")
+    if value > timezone.now().year:
+        raise ValidationError("Year cannot be in the future.")
 
 
 class Artist(models.Model):
@@ -21,12 +28,7 @@ class Album(models.Model):
         on_delete=models.CASCADE,
         related_name="albums",
     )
-    release_year = models.IntegerField(
-        validators=[
-            MinValueValidator(1860),
-            MaxValueValidator(datetime.now().year),
-        ]
-    )
+    release_year = models.IntegerField(validators=[validate_release_year])
     songs = models.ManyToManyField(
         "Song",
         through="AlbumSong",
@@ -61,7 +63,7 @@ class AlbumSong(models.Model):
         on_delete=models.CASCADE,
         related_name="album_songs",
     )
-    track_number = models.PositiveIntegerField()
+    track_number = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         constraints = [

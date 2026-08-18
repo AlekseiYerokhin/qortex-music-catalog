@@ -117,11 +117,7 @@ class Command(BaseCommand):
         force = options.get("force", False)
 
         if Artist.objects.exists() and not force:
-            self.stdout.write(
-                self.style.WARNING(
-                    "Catalog already has data. Use --force to wipe and re-seed."
-                )
-            )
+            self.stdout.write(self.style.WARNING("Catalog already has data. Use --force to wipe and re-seed."))
             return
 
         if force:

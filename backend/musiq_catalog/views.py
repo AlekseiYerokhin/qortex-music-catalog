@@ -1,4 +1,4 @@
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import Count
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
@@ -44,9 +44,7 @@ class ArtistAlbumsList(generics.ListAPIView):
             .prefetch_related(
                 Prefetch(
                     "album_songs",
-                    queryset=AlbumSong.objects.select_related("song").order_by(
-                        "track_number"
-                    ),
+                    queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
                 )
             )
         )
@@ -61,9 +59,7 @@ class AlbumListCreate(generics.ListCreateAPIView):
         return Album.objects.select_related("artist").prefetch_related(
             Prefetch(
                 "album_songs",
-                queryset=AlbumSong.objects.select_related("song").order_by(
-                    "track_number"
-                ),
+                queryset=AlbumSong.objects.select_related("song").order_by("track_number"),
             )
         )
 
@@ -88,28 +84,28 @@ class AlbumSongListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         get_object_or_404(Album, pk=self.kwargs["pk"])
-        return AlbumSong.objects.filter(album_id=self.kwargs["pk"]).select_related(
-            "song"
-        )
+        return AlbumSong.objects.filter(album_id=self.kwargs["pk"]).select_related("song")
 
     def create(self, request, *args, **kwargs):
         album = get_object_or_404(Album, pk=self.kwargs["pk"])
         serializer = AlbumSongCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        song = serializer.validated_data["song"]
+        track_number = serializer.validated_data["track_number"]
         try:
-            link = AlbumSong.objects.create(
-                album=album,
-                song=serializer.validated_data["song"],
-                track_number=serializer.validated_data["track_number"],
-            )
+            with transaction.atomic():
+                link = AlbumSong.objects.create(
+                    album=album,
+                    song=song,
+                    track_number=track_number,
+                )
         except IntegrityError:
+            if AlbumSong.objects.filter(album=album, song=song).exists():
+                msg = "This song is already on this album."
+            else:
+                msg = f"Track number {track_number} is already taken on this album."
             return Response(
-                {
-                    "non_field_errors": [
-                        "This song is already on this album, or the track number "
-                        "is already taken."
-                    ]
-                },
+                {"non_field_errors": [msg]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(

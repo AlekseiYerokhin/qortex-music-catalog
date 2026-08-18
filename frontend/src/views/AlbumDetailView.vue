@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAlbumStore } from '../stores/album'
@@ -129,8 +129,8 @@ async function onFilterSong(val, update) {
     })
     return
   }
-  update(async () => {
-    const { data } = await getSongs({ search: val, page_size: 50 })
+  const { data } = await getSongs({ search: val, page_size: 50 })
+  update(() => {
     filteredSongOptions.value = data.results.map((s) => ({ label: s.title, value: s.id }))
   })
 }
@@ -177,9 +177,13 @@ function confirmRemoveSong(song) {
     persistent: true,
     ok: { label: 'Remove', color: 'negative', unelevated: true },
   }).onOk(async () => {
-    await albumStore.removeSongFromAlbum(route.params.id, song.id)
-    $q.notify({ type: 'positive', message: 'Song removed from album' })
-    await reloadAlbum()
+    try {
+      await albumStore.removeSongFromAlbum(route.params.id, song.id)
+      $q.notify({ type: 'positive', message: 'Song removed from album' })
+      await reloadAlbum()
+    } catch {
+      /* handled by interceptor */
+    }
   })
 }
 
@@ -191,15 +195,23 @@ function confirmDeleteAlbum() {
     persistent: true,
     ok: { label: 'Delete', color: 'negative', unelevated: true },
   }).onOk(async () => {
-    await albumStore.deleteAlbum(album.value.id)
-    $q.notify({ type: 'positive', message: 'Album deleted' })
-    router.push({ name: 'album-list' })
+    try {
+      await albumStore.deleteAlbum(album.value.id)
+      $q.notify({ type: 'positive', message: 'Album deleted' })
+      router.push({ name: 'album-list' })
+    } catch {
+      /* handled by interceptor */
+    }
   })
 }
 
-onMounted(async () => {
+async function loadAlbumDetail() {
   await songStore.fetchSongs({ page_size: 100 })
   filteredSongOptions.value = songStore.songs.map((s) => ({ label: s.title, value: s.id }))
   await reloadAlbum()
-})
+}
+
+watch(() => route.params.id, loadAlbumDetail)
+
+onMounted(loadAlbumDetail)
 </script>

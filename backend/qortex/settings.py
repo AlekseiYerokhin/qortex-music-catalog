@@ -27,9 +27,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 if not SECRET_KEY:
     if DEBUG:
-        SECRET_KEY = (
-            "django-insecure-ga#q228se-_!28w%%rs+lyxg96552+58%e8612)tk!p7g#j1oa"
-        )
+        SECRET_KEY = "django-insecure-ga#q228se-_!28w%%rs+lyxg96552+58%e8612)tk!p7g#j1oa"
     else:
         raise RuntimeError("DJANGO_SECRET_KEY must be set when DEBUG=False")
 
@@ -95,9 +93,7 @@ _default_db_url = os.environ.get(
     "postgres://qortex:qortex@localhost:5432/qortex",
 )
 DATABASES = {
-    "default": dj_database_url.parse(
-        _default_db_url, conn_max_age=600, conn_health_checks=True
-    ),
+    "default": dj_database_url.parse(_default_db_url, conn_max_age=600, conn_health_checks=True),
 }
 
 
@@ -187,5 +183,3 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
 ]
-
-CORS_ALLOW_ALL_ORIGINS = DEBUG
