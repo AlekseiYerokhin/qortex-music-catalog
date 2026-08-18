@@ -7,6 +7,7 @@ settings work for local PostgreSQL and Docker PostgreSQL.
 """
 
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -173,9 +174,11 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# Security hardening (production only)
+# Security hardening (production only, not during tests)
 
-if not DEBUG:
+TESTING = "test" in sys.argv
+
+if not DEBUG and not TESTING:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
