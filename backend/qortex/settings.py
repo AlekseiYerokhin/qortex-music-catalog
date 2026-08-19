@@ -179,14 +179,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 TESTING = "test" in sys.argv
 
 if not DEBUG and not TESTING:
-    SECURE_SSL_REDIRECT = True
+    _ssl_redirect = os.environ.get("DJANGO_SSL_REDIRECT", "false").lower() in ("true", "1", "yes")
+    SECURE_SSL_REDIRECT = _ssl_redirect
     SECURE_REDIRECT_EXEMPT = [r"^health/$"]
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = _ssl_redirect
+    CSRF_COOKIE_SECURE = _ssl_redirect
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    if _ssl_redirect:
+        SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Django REST Framework
